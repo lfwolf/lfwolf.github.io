@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。 1. 学会写作Blog的技巧（teach you the skills of blogging）没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。 2. 便于更好地安排时间（help you work out how much time y">
+  <meta name="description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么要写博客">
-<meta property="og:url" content="http://yoursite.com/2019/09/12/why-write-blog/index.html">
+<meta property="og:title" content="java basics - box and unbox">
+<meta property="og:url" content="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/index.html">
 <meta property="og:site_name" content="程序员的自留地">
-<meta property="og:description" content="断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。 1. 学会写作Blog的技巧（teach you the skills of blogging）没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。 2. 便于更好地安排时间（help you work out how much time y">
+<meta property="og:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-12T03:50:33.365Z">
+<meta property="og:updated_time" content="2019-09-20T15:43:48.498Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="为什么要写博客">
-<meta name="twitter:description" content="断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。 1. 学会写作Blog的技巧（teach you the skills of blogging）没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。 2. 便于更好地安排时间（help you work out how much time y">
-  <link rel="canonical" href="http://yoursite.com/2019/09/12/why-write-blog/">
+<meta name="twitter:title" content="java basics - box and unbox">
+<meta name="twitter:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+  <link rel="canonical" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
 
 
 <script id="page-configurations">
@@ -80,7 +80,7 @@
   };
 </script>
 
-  <title>为什么要写博客 | 程序员的自留地</title>
+  <title>java basics - box and unbox | 程序员的自留地</title>
   
 
 
@@ -204,7 +204,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/12/why-write-blog/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Felix Lee">
@@ -216,7 +216,7 @@
       <meta itemprop="name" content="程序员的自留地">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">为什么要写博客
+        <h1 class="post-title" itemprop="name headline">java basics - box and unbox
 
           
         </h1>
@@ -232,7 +232,7 @@
                 
               
 
-              <time title="Created: 2019-09-12 11:37:32 / Modified: 11:50:33" itemprop="dateCreated datePublished" datetime="2019-09-12T11:37:32+08:00">2019-09-12</time>
+              <time title="Created: 2019-09-20 22:54:25 / Modified: 23:43:48" itemprop="dateCreated datePublished" datetime="2019-09-20T22:54:25+08:00">2019-09-20</time>
             </span>
           
             
@@ -251,12 +251,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。</p>
-<h2 id="1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><a href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）" class="headerlink" title="1. 学会写作Blog的技巧（teach you the skills of blogging）"></a>1. 学会写作Blog的技巧（teach you the skills of blogging）</h2><p>没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。</p>
-<h2 id="2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）"><a href="#2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）" class="headerlink" title="2. 便于更好地安排时间（help you work out how much time you have）"></a>2. 便于更好地安排时间（help you work out how much time you have）</h2><p>写作Blog花费的时间，要比大家想象的多，甚至也比我自己想象的多。但是，另一方面，每天我们又有很多时间被无谓地浪费了。坚持写作Blog的过程，也是进行更好的时间安排的过程。</p>
-<h2 id="3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）"><a href="#3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）" class="headerlink" title="3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）"></a>3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）</h2><p>很多人都有自己的爱好，但是只有当你享受到这种爱好时，你才会长期坚持下去。写作Blog可以帮助你体验到这种感觉。</p>
-<h2 id="4-便于你形成和了解自我（help-you-define-a-niche）"><a href="#4-便于你形成和了解自我（help-you-define-a-niche）" class="headerlink" title="4. 便于你形成和了解自我（help you define a niche）"></a>4. 便于你形成和了解自我（help you define a niche）</h2><p>长期写作Blog最大的好处之一就是，写着写着，你的自我会变得越来越清晰。你最终会明白自己是一个什么样的人，以及自己热爱的又是什么东西。</p>
-<h2 id="5-博客是一份好的简历"><a href="#5-博客是一份好的简历" class="headerlink" title="5. 博客是一份好的简历"></a>5. 博客是一份好的简历</h2><p>长期写下去，你博客的价值会越来越高，会认识更多的志同道合的朋友。这样不仅可以扩展你的交友圈，同样可以扩展你的眼界。</p>
+        <h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
+
+<p>看一看，想一想，答案再最后。</p>
+<h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。<br>| 基本类型 | 包装类型 | 字节数<br>|–|–|–|<br>|byte| Byte | 1<br>|short | Short | 2<br>|int | Integer| 4<br>|float| Float| 4<br>|long | Long| 8<br>|double| Double| 8<br>|char| Char | 2<br>|boolean| Boolean | 单独使用是4个字节，数组中又是1个字节。</p>
+<h2 id="基本类型和包装类型的区别"><a href="#基本类型和包装类型的区别" class="headerlink" title="基本类型和包装类型的区别"></a>基本类型和包装类型的区别</h2><ol>
+<li>基本类型存在栈中，对象存储在堆中。</li>
+<li>初始值不同，包装类型都为null，int为0.</li>
+<li>集合中操作的只能是对象，所以必须要做装箱。</li>
+</ol>
+<h2 id="装箱和拆箱"><a href="#装箱和拆箱" class="headerlink" title="装箱和拆箱"></a>装箱和拆箱</h2><p>基本类型转包装类型（装箱）： valueOf()<br>包装类型转基本类型（拆箱）： xxxValue() [xxx代表基本数据类型]</p>
+<p>valueOf()在sdk中解释如下，注意[-128,127]范围的值将缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public static Integer valueOf(int i)</span><br><span class="line">Returns an Integer instance representing the specified int value. If a new Integer instance is not required, this method should generally be used in preference to the constructor Integer(int), as this method is likely to yield significantly better space and time performance by caching frequently requested values. This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.</span><br><span class="line">Parameters:</span><br><span class="line">i - an int value.</span><br><span class="line">Returns:</span><br><span class="line">an Integer instance representing i.</span><br><span class="line">Since:</span><br><span class="line">1.5</span><br></pre></td></tr></table></figure>
+
+<h2 id="这里是答案"><a href="#这里是答案" class="headerlink" title="这里是答案"></a>这里是答案</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">true  //拆箱对比值相等</span><br><span class="line">true  //[-127,128]范围内整数做了缓存对比。</span><br><span class="line">true  //传引用，指向同一个对象。</span><br><span class="line">false //超出缓存值范围，不同对象引用的比较</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -273,8 +283,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/09/12/hello-world/" rel="next" title="Hello World">
-                  <i class="fa fa-chevron-left"></i> Hello World
+                <a href="/2019/09/19/perf-between-c-java-and-dotnet/" rel="next" title="perf between c++,java and dotnet">
+                  <i class="fa fa-chevron-left"></i> perf between c++,java and dotnet
                 </a>
               
             </div>
@@ -282,10 +292,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/09/19/perf-between-c-java-and-dotnet/" rel="prev" title="perf between c++,java and dotnet">
-                  perf between c++,java and dotnet <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -334,7 +340,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><span class="nav-number">1.</span> <span class="nav-text">1. 学会写作Blog的技巧（teach you the skills of blogging）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）"><span class="nav-number">2.</span> <span class="nav-text">2. 便于更好地安排时间（help you work out how much time you have）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）"><span class="nav-number">3.</span> <span class="nav-text">3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-便于你形成和了解自我（help-you-define-a-niche）"><span class="nav-number">4.</span> <span class="nav-text">4. 便于你形成和了解自我（help you define a niche）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-博客是一份好的简历"><span class="nav-number">5.</span> <span class="nav-text">5. 博客是一份好的简历</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-基础之拆箱、装箱"><span class="nav-number">1.</span> <span class="nav-text">java 基础之拆箱、装箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本类型"><span class="nav-number">2.</span> <span class="nav-text">什么是基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本类型和包装类型的区别"><span class="nav-number">3.</span> <span class="nav-text">基本类型和包装类型的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装箱和拆箱"><span class="nav-number">4.</span> <span class="nav-text">装箱和拆箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这里是答案"><span class="nav-number">5.</span> <span class="nav-text">这里是答案</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
