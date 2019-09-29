@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="0x01 起因为什么这么久才写 最近看到一个推送的公众号，介绍了一个程序员的牢狱之灾，大意是在猪八戒网站上接活涉嫌诈骗+开设赌场被深圳龙岗警方抓捕并关押400多天的事。看了那些照片，不由惊觉，我所度多的那八个月何其相似，是该记录一下了。  知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。   究竟是什么事上着班，挂着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="prison time">
+<meta property="og:url" content="http://yoursite.com/2019/09/29/prison-time/index.html">
+<meta property="og:site_name" content="程序员的自留地">
+<meta property="og:description" content="0x01 起因为什么这么久才写 最近看到一个推送的公众号，介绍了一个程序员的牢狱之灾，大意是在猪八戒网站上接活涉嫌诈骗+开设赌场被深圳龙岗警方抓捕并关押400多天的事。看了那些照片，不由惊觉，我所度多的那八个月何其相似，是该记录一下了。  知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。   究竟是什么事上着班，挂着">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-29T14:58:02.907Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="prison time">
+<meta name="twitter:description" content="0x01 起因为什么这么久才写 最近看到一个推送的公众号，介绍了一个程序员的牢狱之灾，大意是在猪八戒网站上接活涉嫌诈骗+开设赌场被深圳龙岗警方抓捕并关押400多天的事。看了那些照片，不由惊觉，我所度多的那八个月何其相似，是该记录一下了。  知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。   究竟是什么事上着班，挂着">
+  <link rel="canonical" href="http://yoursite.com/2019/09/29/prison-time/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>prison time | 程序员的自留地</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?de55e5b247ef35a481c60a5f18855ed7";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">程序员的自留地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/29/prison-time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自留地">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">prison time
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-09-29 19:12:41 / Modified: 22:58:02" itemprop="dateCreated datePublished" datetime="2019-09-29T19:12:41+08:00">2019-09-29</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="0x01-起因"><a href="#0x01-起因" class="headerlink" title="0x01 起因"></a>0x01 起因</h2><h3 id="为什么这么久才写"><a href="#为什么这么久才写" class="headerlink" title="为什么这么久才写"></a>为什么这么久才写</h3><ol>
+<li><p>最近看到一个推送的公众号，介绍了一个程序员的牢狱之灾，大意是在猪八戒网站上接活涉嫌诈骗+开设赌场被深圳龙岗警方抓捕并关押400多天的事。看了那些照片，不由惊觉，我所度多的那八个月何其相似，是该记录一下了。</p>
+</li>
+<li><p>知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。</p>
+</li>
+</ol>
+<h3 id="究竟是什么事"><a href="#究竟是什么事" class="headerlink" title="究竟是什么事"></a>究竟是什么事</h3><p>上着班，挂着耳机，听着音乐，忽然就被抓了。</p>
+<p>由于涉嫌诈骗，我被关押看守所近8个月后，签署非法经营罪的认罪认罚取保候审，退还工资4万元，检察院最终决定不起诉。</p>
+<ol>
+<li><p>公司是做什么的？</p>
+<p>聚合支付，俗称无牌第四方支付。</p>
+</li>
+<li><p>一共多少人，都抓了，还是只有你被抓？</p>
+<p>10多人吧，抓了3个，法人、运营小姑娘、我   </p>
+</li>
+<li><p>为什么抓你们？</p>
+<p>有个下游商户是做贵金属交易平台，涉嫌诈骗，我们作为他们平台的上游支付方，所以被抓。</p>
+</li>
+<li><p>为什么只抓你们几个？</p>
+<p>时也命也。公司会给下游客户拉QQ群，我负责技术对接。公司在群里的人都被抓。没上班的就没有。所以我也无数次想过：如果那天我请个假</p>
+</li>
+<li><p>关键问题，你知不知道对方是诈骗？</p>
+<p>真不知道商户是做什么的，公司几百个商户都会拉qq群，我都在群里，但基本不说话，除非@我才会回答些纯技术问题。</p>
+</li>
+<li><p>为什么能取保并不起诉？</p>
+<p>还能为什么？是真没证据呗。等8个月来了个非法经营罪，不认罪认罚就不让取保，继续呆里面等着走流程吧，1年半都不一定能判下来。到最后来个做多久判多久，民与官斗，算了吧。</p>
+</li>
+<li><p>觉得冤枉吗？</p>
+<p>冤，真的冤。但也看开了，毕竟只是8个月，也没起诉留案底。都不够上新闻的。</p>
+</li>
+</ol>
+<h2 id="0x02-关键时间节点"><a href="#0x02-关键时间节点" class="headerlink" title="0x02 关键时间节点"></a>0x02 关键时间节点</h2><p>  2018/7/18 在公司被抓捕，押送福田区香蜜湖派出所。</p>
+<p>  2018/7/19 涉嫌诈骗刑事拘留，押送福田看守所。</p>
+<p>  2018/8/25 检察院签发逮捕令</p>
+<p>  2018/10/25 公安第一次送检</p>
+<p>  2018/11/25 检察院第一次退检</p>
+<p>  2018/12/23 公安第二次送检</p>
+<p>  2019/1/23 检察院第二次退检</p>
+<p>  2019/2/23 公安第三次送检</p>
+<p>  2019/3/15 认罪认罚，取保候审</p>
+<p>  2019/5/29 退还工资4万元</p>
+<p>  2019/6/23 检察院不起诉，完结。</p>
+<h2 id="0x03-公司业务"><a href="#0x03-公司业务" class="headerlink" title="0x03 公司业务"></a>0x03 公司业务</h2><h3 id="聚合支付"><a href="#聚合支付" class="headerlink" title="聚合支付"></a>聚合支付</h3><p>是的，就是这两年中央严管的无牌支付（俗称第四方）。简单说就是中间商，提供一个接口给下游商户，后端对接多个银行或三分的支付接口，赚钱差价和返佣金。</p>
+<h3 id="系统平台"><a href="#系统平台" class="headerlink" title="系统平台"></a>系统平台</h3><p>整套系统框架是照搬自嘉联支付，老板（法人）和股东原来就是支付公司的技术骨干，出来创业单干也就连着系统带出来了。前端采用 PHP （phalcon框架），服务端采用C++，调用lua脚本实现与上游支付接口对接，数据库采用oracle，服务器采用阿里云。我5月进公司后主要对后端框架做改造，采用java实现对接上游功能。另外计划将oracle做迁移到postegreSQL上。有空我再补上架构图。</p>
+<h3 id="2018-7-18-派出所"><a href="#2018-7-18-派出所" class="headerlink" title="2018/7/18 派出所"></a>2018/7/18 派出所</h3><p>  09:00 和往常一样我来到公司，打开电脑，和运营沟通当天的工作。老板的朋友也来到公司，他们相约当日去广州参加一个会议。</p>
+<p>  09:30 有人按门铃，说是物业，运营过去开门，一群人冲了进来，估计有10个左右，有男有女都是便衣，命令我们都不许动，随即<br>  都被加手拷，我问了句：“你们是谁，给我看看证件”，然后被当作不老实反铐双手。</p>
+<p>  11:00 随行技术人员从我电脑连着的阿里云服务器上拷贝数据，民警叫了外卖（嘉旺），但此时我哪有心情吃饭，看着手上的手铐，这一切太过魔幻而无法相信是现实了。</p>
+<p>  12:00 我请求民警将我解拷或正拷以便上厕所，但被告知钥匙被其他民警带走了。</p>
+<p>  15:00 实在憋不住了，不停尝试后双手从脚下绕道前面，终于可以上厕所了。</p>
+<p>  17:00 阿里云的数据终于拷贝完了，我们3个都被押下楼，此时还顾及颜面，那背包遮住双手，哪里想到这一走就是8个月。</p>
+<p>  18:00 到了香蜜湖看守所，一系列的拍照录指纹后，看到了其他的一些同事也被关押，大家都互相安慰，相信很快就能出去。派出所里只有2个隔间，男女分开各一件，手铐也陆续被解开了。（公司有2个办公室，我们3各在新办公室被抓，其他同事在老办公室被抓）。</p>
+<p>  23:00 陆陆续续同事都被提审了，期间有三个案子我现在还记得。</p>
+<pre><code>1. 台湾人打孩子被老婆告了，最后被治安拘留
+2. 2个女人（前任、现任）为男人打架，关进来后认怂和解了。
+3. 被同事跟踪，发现后摔了那个同事的手机（iphone），估价超3000被抓。派出所关了2天后和解。</code></pre><p>  24:00 除了我们3个，其他同事都被统一叫了出去签字释放。</p>
+<h2 id="0x05-漫漫长夜八个月"><a href="#0x05-漫漫长夜八个月" class="headerlink" title="0x05 漫漫长夜八个月"></a>0x05 漫漫长夜八个月</h2><p>TBC</p>
+<h2 id="0x06-看守所制度"><a href="#0x06-看守所制度" class="headerlink" title="0x06 看守所制度"></a>0x06 看守所制度</h2><ol>
+<li>总结一句话：犯人自治。</li>
+<li>第一天管教就会告诉新兵，墙上贴的权利、义务只是做样子，你们是犯人，没有任何权利。</li>
+<li>作息规律，<ol>
+<li>6:30 起床，</li>
+<li>7:00 吃饭，</li>
+<li>7:40 ~ 8:40 打坐，分2节</li>
+<li>9:00</li>
+</ol>
+</li>
+<li>一日三餐<ol>
+<li>早餐:一个馒头。初始2个，后减为一个。</li>
+<li>中餐:白菜就算好菜、花菜算过节。出现过（海带、南瓜等）</li>
+<li>晚餐:每周四有一次加餐，花生猪脚。</li>
+</ol>
+</li>
+<li>消费制度<ol>
+<li>每周可购物，限额200.轮值员500.</li>
+<li>若有人打架，全仓停一周购物。</li>
+<li>节假日等适当放宽额度至300。例如购买保暖内衣。</li>
+</ol>
+</li>
+<li>值班<ol>
+<li>新兵进仓连值7天，中班+2个晚班。</li>
+<li>晚班从10:00 ～6:30，每个半75分钟。提前10分钟叫醒下一班交接。</li>
+<li>值班必须站着，不能靠墙闭眼。广播一响，罚班10个起。</li>
+</ol>
+</li>
+<li>睡觉<ol>
+<li>床板是轮值+内务+老兵</li>
+<li>地板是新兵。最易起冲突的就是睡觉排位。</li>
+</ol>
+</li>
+</ol>
+<h2 id="0x07-相关文档"><a href="#0x07-相关文档" class="headerlink" title="0x07 相关文档"></a>0x07 相关文档</h2><h3 id="刑事拘留通知书"><a href="#刑事拘留通知书" class="headerlink" title="刑事拘留通知书"></a>刑事拘留通知书</h3><p>所长签字的通知书，同时也要被拘留人员签字，但都不影响流程。至今我也不明白签或不签有什么区别。</p>
+<h3 id="逮捕令"><a href="#逮捕令" class="headerlink" title="逮捕令"></a>逮捕令</h3><p>需要签字认罪/不认罪，但似乎都没有什么影响。</p>
+<h3 id="认罪认罚通知书"><a href="#认罪认罚通知书" class="headerlink" title="认罪认罚通知书"></a>认罪认罚通知书</h3><p>必须要签，否则办理不了取保候审。</p>
+<h2 id="0x08-有趣的人和事"><a href="#0x08-有趣的人和事" class="headerlink" title="0x08 有趣的人和事"></a>0x08 有趣的人和事</h2><h3 id="外国人"><a href="#外国人" class="headerlink" title="外国人"></a>外国人</h3><ol>
+<li>韩国人：入室抢劫。17年进，看守所关押近2年，2019春节前下判决送东莞国际监狱。刑期5年。</li>
+<li>乌克兰人：贩毒。小帅哥，第一次来中国，估计问题不大。</li>
+<li>越南人：非法打工。遣返。特色：好人，JJ大并塞了2个大珠子，可能是鸭。南山关一个月转福田所，2018年底遣返，关押3个月。</li>
+<li>马来西亚人：信用卡诈骗。17年进，华裔老油条，各国都坐过牢。懂普通话、闽南话、潮汕话、英语、马来语、法语。</li>
+<li>香港人：毒贩。老油条，入仓被电小JJ。涉案毒品够判无期了。不过是在交易前的对方身上查获，没证据但有案底。2019过年前转二所（深圳市第二看守所,都是刑期10年以上)</li>
+</ol>
+<h3 id="塑料兄弟情"><a href="#塑料兄弟情" class="headerlink" title="塑料兄弟情"></a>塑料兄弟情</h3><p>韩国大使馆不错，有存钱给韩国人。马来一直没钱，故一直和韩国聊天，韩国也挺仗义，基本上购物食品都和马来分。但有时也吵架，马来就和我们用中文说韩国坏话，不仗义。最后一次吵架直至韩国离开都没和好，这期间我充当韩国翻译。</p>
+<h3 id="老乡情谊"><a href="#老乡情谊" class="headerlink" title="老乡情谊"></a>老乡情谊</h3><p>刚进仓一切都陌生，还好轮值员是老乡，一米八几的大个子且壮，很照顾我。最后判决下来还前安排我当内务，虽然最后没成，但很是感激。他也是经济案判了2年半，放弃上诉了，去监狱体验一番，2020年中出狱，愿他一切安好。</p>
+<h3 id="有趣案件"><a href="#有趣案件" class="headerlink" title="有趣案件"></a>有趣案件</h3><p>案情来自闲聊，不保证真实。</p>
+<ol>
+<li>东莞仔：妹妹嫁给了黑人，黑人转钱给他，让他取给他妹妹。兄妹俩都被抓。</li>
+<li>广西仔：刚刚从韶关监狱出来，就被公安直接从大门口接到公安局，然后转看守所，神反转啊。还是两年前的盗窃案。</li>
+<li>湖南仔：城中村开了2家麻将馆被抓。</li>
+<li>四川仔：在茶馆长租了个房价开麻将馆被抓。</li>
+</ol>
+<h3 id="经济犯"><a href="#经济犯" class="headerlink" title="经济犯"></a>经济犯</h3><p>整个看守所最多的就是经济犯了，也算是深圳或者说是福田特色了。包括诈骗（电信诈骗、合同诈骗）、非吸（非法吸收公众存款）、职务侵占等、商标侵权等。</p>
+<h3 id="打架"><a href="#打架" class="headerlink" title="打架"></a>打架</h3><ol>
+<li>河南小偷 vs 广东毒贩 ：互相挨着睡，半夜互殴。</li>
+<li>江西小偷 vs 轮值员  ：被几个内务按着打了个眼充血。</li>
+</ol>
+<h2 id="0x08-回家"><a href="#0x08-回家" class="headerlink" title="0x08 回家"></a>0x08 回家</h2><p>3.15，打假日，同案共7人取保，3女4男，同公司2人，其他人不认识。其中有个东莞女孩子仅是借卡给同学。</p>
+<p>深圳市检察院检务大厅，领取取保候审单，回家。</p>
+<h2 id="0x08-感谢-amp-总结"><a href="#0x08-感谢-amp-总结" class="headerlink" title="0x08 感谢&amp;总结"></a>0x08 感谢&amp;总结</h2><p>最想感谢的是家人的支持。技术人员找工作千万谨慎，尤其是和支付、金融打交道的。我作为一个传统行业（物流相关）it人员转型互联网金融，可谓不知深浅，吃一堑长一智，长路漫漫，且行且珍惜。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/25/single-page-app-with-vue/" rel="next" title="使用vue开发单页程序（SPA）">
+                  <i class="fa fa-chevron-left"></i> 使用vue开发单页程序（SPA）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-起因"><span class="nav-number">1.</span> <span class="nav-text">0x01 起因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么这么久才写"><span class="nav-number">1.1.</span> <span class="nav-text">为什么这么久才写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#究竟是什么事"><span class="nav-number">1.2.</span> <span class="nav-text">究竟是什么事</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-关键时间节点"><span class="nav-number">2.</span> <span class="nav-text">0x02 关键时间节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-公司业务"><span class="nav-number">3.</span> <span class="nav-text">0x03 公司业务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合支付"><span class="nav-number">3.1.</span> <span class="nav-text">聚合支付</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统平台"><span class="nav-number">3.2.</span> <span class="nav-text">系统平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2018-7-18-派出所"><span class="nav-number">3.3.</span> <span class="nav-text">2018/7/18 派出所</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-漫漫长夜八个月"><span class="nav-number">4.</span> <span class="nav-text">0x05 漫漫长夜八个月</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-看守所制度"><span class="nav-number">5.</span> <span class="nav-text">0x06 看守所制度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-相关文档"><span class="nav-number">6.</span> <span class="nav-text">0x07 相关文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#刑事拘留通知书"><span class="nav-number">6.1.</span> <span class="nav-text">刑事拘留通知书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#逮捕令"><span class="nav-number">6.2.</span> <span class="nav-text">逮捕令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认罪认罚通知书"><span class="nav-number">6.3.</span> <span class="nav-text">认罪认罚通知书</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-有趣的人和事"><span class="nav-number">7.</span> <span class="nav-text">0x08 有趣的人和事</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外国人"><span class="nav-number">7.1.</span> <span class="nav-text">外国人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#塑料兄弟情"><span class="nav-number">7.2.</span> <span class="nav-text">塑料兄弟情</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#老乡情谊"><span class="nav-number">7.3.</span> <span class="nav-text">老乡情谊</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有趣案件"><span class="nav-number">7.4.</span> <span class="nav-text">有趣案件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#经济犯"><span class="nav-number">7.5.</span> <span class="nav-text">经济犯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打架"><span class="nav-number">7.6.</span> <span class="nav-text">打架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-回家"><span class="nav-number">8.</span> <span class="nav-text">0x08 回家</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-感谢-amp-总结"><span class="nav-number">9.</span> <span class="nav-text">0x08 感谢&amp;总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Felix Lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+  </nav>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Felix Lee</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
