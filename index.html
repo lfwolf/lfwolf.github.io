@@ -199,6 +199,98 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/30/wechat-extension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自留地">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/09/30/wechat-extension/" class="post-title-link" itemprop="url">wechat extension</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-09-30 17:09:49 / Modified: 18:30:59" itemprop="dateCreated datePublished" datetime="2019-09-30T17:09:49+08:00">2019-09-30</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="为什么需要微信扩展"><a href="#为什么需要微信扩展" class="headerlink" title="为什么需要微信扩展"></a>为什么需要微信扩展</h2><p>这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。<br>所以我希望做个工具减轻她的公众。</p>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：</p>
+<div id="flowchart-0" class="flow-chart"></div>
+
+<h2 id="开源组件"><a href="#开源组件" class="headerlink" title="开源组件"></a>开源组件</h2><ol>
+<li>itchat: 基于微信网页版的webapi。<a href="https://github.com/littlecodersh/itchat" target="_blank" rel="noopener">code</a> <a href="https://itchat.readthedocs.io/zh/latest/" target="_blank" rel="noopener">文档</a></li>
+<li>wechaty: 基于微信网页版的webapi。<a href="https://github.com/Chatie/wechaty" target="_blank" rel="noopener">code</a></li>
+<li><strong>WeChatExtension-ForMac</strong>: 这个就比较NB了，是微信mac版的扩展，上面2个基于web api的都挂了，无法登录，目前只剩这个能用了。<a href="https://github.com/MustangYM/WeChatExtension-ForMac" target="_blank" rel="noopener">code</a></li>
+</ol>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start:>http://www.google.com[blank]
+e=>end:>http://www.google.com
+op1=>operation: 监控素材群
+sub1=>subroutine: 图片替换二维码
+sub2=>subroutine: 转发微信群
+cond=>condition: 图片消息？:>http://www.google.com
+cond1=>condition: 是否退出
+
+st->op1->cond
+cond(yes)->sub1(right)->sub2->op1
+cond(no)->cond1(yes)->e
+cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script>
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/29/prison-time/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -935,7 +1027,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

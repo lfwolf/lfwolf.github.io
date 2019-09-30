@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+  <meta name="description" content="为什么需要微信扩展这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。所以我希望做个工具减轻她的公众。 工作流程做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：   开源组件 itchat: 基于微信网页版的webapi。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java basics - box and unbox">
-<meta property="og:url" content="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/index.html">
+<meta property="og:title" content="wechat extension">
+<meta property="og:url" content="http://yoursite.com/2019/09/30/wechat-extension/index.html">
 <meta property="og:site_name" content="程序员的自留地">
-<meta property="og:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+<meta property="og:description" content="为什么需要微信扩展这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。所以我希望做个工具减轻她的公众。 工作流程做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：   开源组件 itchat: 基于微信网页版的webapi。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-20T15:51:32.665Z">
+<meta property="og:updated_time" content="2019-09-30T10:30:59.288Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java basics - box and unbox">
-<meta name="twitter:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
-  <link rel="canonical" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
+<meta name="twitter:title" content="wechat extension">
+<meta name="twitter:description" content="为什么需要微信扩展这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。所以我希望做个工具减轻她的公众。 工作流程做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：   开源组件 itchat: 基于微信网页版的webapi。">
+  <link rel="canonical" href="http://yoursite.com/2019/09/30/wechat-extension/">
 
 
 <script id="page-configurations">
@@ -80,7 +80,7 @@
   };
 </script>
 
-  <title>java basics - box and unbox | 程序员的自留地</title>
+  <title>wechat extension | 程序员的自留地</title>
   
 
 
@@ -204,7 +204,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/30/wechat-extension/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Felix Lee">
@@ -216,7 +216,7 @@
       <meta itemprop="name" content="程序员的自留地">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">java basics - box and unbox
+        <h1 class="post-title" itemprop="name headline">wechat extension
 
           
         </h1>
@@ -232,7 +232,7 @@
                 
               
 
-              <time title="Created: 2019-09-20 22:54:25 / Modified: 23:51:32" itemprop="dateCreated datePublished" datetime="2019-09-20T22:54:25+08:00">2019-09-20</time>
+              <time title="Created: 2019-09-30 17:09:49 / Modified: 18:30:59" itemprop="dateCreated datePublished" datetime="2019-09-30T17:09:49+08:00">2019-09-30</time>
             </span>
           
             
@@ -251,72 +251,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
+        <h2 id="为什么需要微信扩展"><a href="#为什么需要微信扩展" class="headerlink" title="为什么需要微信扩展"></a>为什么需要微信扩展</h2><p>这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。<br>所以我希望做个工具减轻她的公众。</p>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：</p>
+<div id="flowchart-0" class="flow-chart"></div>
 
-<p>看一看，想一想，答案在最后。</p>
-<h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。</p>
-<table>
-<thead>
-<tr>
-<th>基本类型</th>
-<th>包装类型</th>
-<th>字节数</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>byte</td>
-<td>Byte</td>
-<td>1</td>
-</tr>
-<tr>
-<td>short</td>
-<td>Short</td>
-<td>2</td>
-</tr>
-<tr>
-<td>int</td>
-<td>Integer</td>
-<td>4</td>
-</tr>
-<tr>
-<td>float</td>
-<td>Float</td>
-<td>4</td>
-</tr>
-<tr>
-<td>long</td>
-<td>Long</td>
-<td>8</td>
-</tr>
-<tr>
-<td>double</td>
-<td>Double</td>
-<td>8</td>
-</tr>
-<tr>
-<td>char</td>
-<td>Char</td>
-<td>2</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>Boolean</td>
-<td>单独使用是4个字节，数组中又是1个字节。</td>
-</tr>
-</tbody></table>
-<h2 id="基本类型和包装类型的区别"><a href="#基本类型和包装类型的区别" class="headerlink" title="基本类型和包装类型的区别"></a>基本类型和包装类型的区别</h2><ol>
-<li>基本类型存在栈中，对象存储在堆中。</li>
-<li>初始值不同，包装类型都为null，int为0.</li>
-<li>集合中操作的只能是对象，所以必须要做装箱。</li>
+<h2 id="开源组件"><a href="#开源组件" class="headerlink" title="开源组件"></a>开源组件</h2><ol>
+<li>itchat: 基于微信网页版的webapi。<a href="https://github.com/littlecodersh/itchat" target="_blank" rel="noopener">code</a> <a href="https://itchat.readthedocs.io/zh/latest/" target="_blank" rel="noopener">文档</a></li>
+<li>wechaty: 基于微信网页版的webapi。<a href="https://github.com/Chatie/wechaty" target="_blank" rel="noopener">code</a></li>
+<li><strong>WeChatExtension-ForMac</strong>: 这个就比较NB了，是微信mac版的扩展，上面2个基于web api的都挂了，无法登录，目前只剩这个能用了。<a href="https://github.com/MustangYM/WeChatExtension-ForMac" target="_blank" rel="noopener">code</a></li>
 </ol>
-<h2 id="装箱和拆箱"><a href="#装箱和拆箱" class="headerlink" title="装箱和拆箱"></a>装箱和拆箱</h2><p>基本类型转包装类型（装箱）： valueOf()<br>包装类型转基本类型（拆箱）： xxxValue() [xxx代表基本数据类型]</p>
-<p>valueOf()在sdk中解释如下，注意[-128,127]范围的值将缓存</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static Integer valueOf(int i)</span><br><span class="line">Returns an Integer instance representing the specified int value. If a new Integer instance is not required, this method should generally be used in preference to the constructor Integer(int), as this method is likely to yield significantly better space and time performance by caching frequently requested values. </span><br><span class="line">This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.</span><br><span class="line">Parameters:</span><br><span class="line">i - an int value.</span><br><span class="line">Returns:</span><br><span class="line">an Integer instance representing i.</span><br><span class="line">Since:</span><br><span class="line">1.5</span><br></pre></td></tr></table></figure>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start:>http://www.google.com[blank]
+e=>end:>http://www.google.com
+op1=>operation: 监控素材群
+sub1=>subroutine: 图片替换二维码
+sub2=>subroutine: 转发微信群
+cond=>condition: 图片消息？:>http://www.google.com
+cond1=>condition: 是否退出
 
-<h2 id="这里是答案"><a href="#这里是答案" class="headerlink" title="这里是答案"></a>这里是答案</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">true  //拆箱对比值相等</span><br><span class="line">true  //[-127,128]范围内整数做了缓存对比。</span><br><span class="line">true  //传引用，指向同一个对象。</span><br><span class="line">false //超出缓存值范围，不同对象引用的比较</span><br></pre></td></tr></table></figure>
-
-
+st->op1->cond
+cond(yes)->sub1(right)->sub2->op1
+cond(no)->cond1(yes)->e
+cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script>
     </div>
 
     
@@ -332,8 +287,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/09/19/perf-between-c-java-and-dotnet/" rel="next" title="perf between c++,java and dotnet">
-                  <i class="fa fa-chevron-left"></i> perf between c++,java and dotnet
+                <a href="/2019/09/29/prison-time/" rel="next" title="prison time">
+                  <i class="fa fa-chevron-left"></i> prison time
                 </a>
               
             </div>
@@ -341,10 +296,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/09/25/single-page-app-with-vue/" rel="prev" title="使用vue开发单页程序（SPA）">
-                  使用vue开发单页程序（SPA） <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -393,7 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-基础之拆箱、装箱"><span class="nav-number">1.</span> <span class="nav-text">java 基础之拆箱、装箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本类型"><span class="nav-number">2.</span> <span class="nav-text">什么是基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本类型和包装类型的区别"><span class="nav-number">3.</span> <span class="nav-text">基本类型和包装类型的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装箱和拆箱"><span class="nav-number">4.</span> <span class="nav-text">装箱和拆箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这里是答案"><span class="nav-number">5.</span> <span class="nav-text">这里是答案</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要微信扩展"><span class="nav-number">1.</span> <span class="nav-text">为什么需要微信扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程"><span class="nav-number">2.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开源组件"><span class="nav-number">3.</span> <span class="nav-text">开源组件</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
