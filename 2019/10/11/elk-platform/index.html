@@ -55,18 +55,18 @@
   };
 </script>
 
-  <meta name="description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+  <meta name="description" content="ELK日志平台迁移一篇旧账。 什么是ELKELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。 解决什么问题公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。 ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java basics - box and unbox">
-<meta property="og:url" content="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/index.html">
+<meta property="og:title" content="elk platform">
+<meta property="og:url" content="http://yoursite.com/2019/10/11/elk-platform/index.html">
 <meta property="og:site_name" content="程序员的自留地">
-<meta property="og:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+<meta property="og:description" content="ELK日志平台迁移一篇旧账。 什么是ELKELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。 解决什么问题公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。 ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-20T15:51:32.665Z">
+<meta property="og:updated_time" content="2019-10-11T10:04:35.098Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java basics - box and unbox">
-<meta name="twitter:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
-  <link rel="canonical" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
+<meta name="twitter:title" content="elk platform">
+<meta name="twitter:description" content="ELK日志平台迁移一篇旧账。 什么是ELKELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。 解决什么问题公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。 ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通">
+  <link rel="canonical" href="http://yoursite.com/2019/10/11/elk-platform/">
 
 
 <script id="page-configurations">
@@ -80,7 +80,7 @@
   };
 </script>
 
-  <title>java basics - box and unbox | 程序员的自留地</title>
+  <title>elk platform | 程序员的自留地</title>
   
 
 
@@ -204,7 +204,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/11/elk-platform/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Felix Lee">
@@ -216,7 +216,7 @@
       <meta itemprop="name" content="程序员的自留地">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">java basics - box and unbox
+        <h1 class="post-title" itemprop="name headline">elk platform
 
           
         </h1>
@@ -232,7 +232,7 @@
                 
               
 
-              <time title="Created: 2019-09-20 22:54:25 / Modified: 23:51:32" itemprop="dateCreated datePublished" datetime="2019-09-20T22:54:25+08:00">2019-09-20</time>
+              <time title="Created: 2019-10-11 18:01:30 / Modified: 18:04:35" itemprop="dateCreated datePublished" datetime="2019-10-11T18:01:30+08:00">2019-10-11</time>
             </span>
           
             
@@ -251,71 +251,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
-
-<p>看一看，想一想，答案在最后。</p>
-<h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。</p>
-<table>
-<thead>
-<tr>
-<th>基本类型</th>
-<th>包装类型</th>
-<th>字节数</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>byte</td>
-<td>Byte</td>
-<td>1</td>
-</tr>
-<tr>
-<td>short</td>
-<td>Short</td>
-<td>2</td>
-</tr>
-<tr>
-<td>int</td>
-<td>Integer</td>
-<td>4</td>
-</tr>
-<tr>
-<td>float</td>
-<td>Float</td>
-<td>4</td>
-</tr>
-<tr>
-<td>long</td>
-<td>Long</td>
-<td>8</td>
-</tr>
-<tr>
-<td>double</td>
-<td>Double</td>
-<td>8</td>
-</tr>
-<tr>
-<td>char</td>
-<td>Char</td>
-<td>2</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>Boolean</td>
-<td>单独使用是4个字节，数组中又是1个字节。</td>
-</tr>
-</tbody></table>
-<h2 id="基本类型和包装类型的区别"><a href="#基本类型和包装类型的区别" class="headerlink" title="基本类型和包装类型的区别"></a>基本类型和包装类型的区别</h2><ol>
-<li>基本类型存在栈中，对象存储在堆中。</li>
-<li>初始值不同，包装类型都为null，int为0.</li>
-<li>集合中操作的只能是对象，所以必须要做装箱。</li>
-</ol>
-<h2 id="装箱和拆箱"><a href="#装箱和拆箱" class="headerlink" title="装箱和拆箱"></a>装箱和拆箱</h2><p>基本类型转包装类型（装箱）： valueOf()<br>包装类型转基本类型（拆箱）： xxxValue() [xxx代表基本数据类型]</p>
-<p>valueOf()在sdk中解释如下，注意[-128,127]范围的值将缓存</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static Integer valueOf(int i)</span><br><span class="line">Returns an Integer instance representing the specified int value. If a new Integer instance is not required, this method should generally be used in preference to the constructor Integer(int), as this method is likely to yield significantly better space and time performance by caching frequently requested values. </span><br><span class="line">This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.</span><br><span class="line">Parameters:</span><br><span class="line">i - an int value.</span><br><span class="line">Returns:</span><br><span class="line">an Integer instance representing i.</span><br><span class="line">Since:</span><br><span class="line">1.5</span><br></pre></td></tr></table></figure>
-
-<h2 id="这里是答案"><a href="#这里是答案" class="headerlink" title="这里是答案"></a>这里是答案</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">true  //拆箱对比值相等</span><br><span class="line">true  //[-127,128]范围内整数做了缓存对比。</span><br><span class="line">true  //传引用，指向同一个对象。</span><br><span class="line">false //超出缓存值范围，不同对象引用的比较</span><br></pre></td></tr></table></figure>
-
+        <h2 id="ELK日志平台"><a href="#ELK日志平台" class="headerlink" title="ELK日志平台"></a>ELK日志平台</h2><p>迁移一篇旧账。</p>
+<h3 id="什么是ELK"><a href="#什么是ELK" class="headerlink" title="什么是ELK"></a>什么是ELK</h3><p>ELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。</p>
+<h3 id="解决什么问题"><a href="#解决什么问题" class="headerlink" title="解决什么问题"></a>解决什么问题</h3><p>公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。</p>
+<p>ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通知运维。</p>
+<p>计划步骤如下：</p>
+<p>1）制定日志规范，在程序中增加日志，记录处理过程。</p>
+<p>2）部署Logstash监控日志文件。</p>
+<p>3）开发服务程序，定时查询elasticsearch，按文件名比对处理状态，例如：有发送记录，但设定时间内无接收的记录则报警。</p>
+<p>计划架构如下：</p>
+<p>logstash -&gt; elasticsearch -&gt; kibana</p>
+<h3 id="踩坑之旅"><a href="#踩坑之旅" class="headerlink" title="踩坑之旅"></a>踩坑之旅</h3><p>其实也不算坑，主要还是不了解。</p>
+<p>1）指南中说Logstash在windows环境下可能不靠谱，所以替换成Filebeat，研究一圈后发现居然没有字段提取功能，所以架构又变成</p>
+<p>Filebeat -&gt; Logstash -&gt; ElasticSearch -&gt; Kibana</p>
+<p>2）指南中看到了Kibana的watcher插件，貌似可以替代计划的3），研究一圈后要实现定时查询后遍历再匹配很难，性能估计也扛不住。</p>
+<p>3）重新审视计划，更好的方案应该是在日志写入时就匹配，匹配上后更新发送记录状态，watcher只要实现定时查询没有匹配状态的发送记录即可。</p>
+<p>4）准备开发logstash的插件，研究后发现通过logstash-input-beats/logstash-filter-grok/logstash-filter-elasticsearch/logstash-output-elasticsearch插件可实现该功能。</p>
+<p>5）logstash-filter-elasticsearch插件，原打算通过此步获取_id并在output中更新发送的日志记录，但其他值都能取到，就是没有_id，查看github源码发现</p>
+<p>只能获取’hits’][‘hits’][_source]中的内容，而_id为[‘hits’][‘hits’][‘_id’]，修改代码后OK.</p>
+<p>6）logstash-out-elasticsearch插件，通过设置document_id及action=update后可以更新成功，但把所有的接收日志信息都更新到了发送日志记录，只有</p>
+<p>另取其他插件实现了。</p>
+<p>7）logstash-out-http插件，通过该插件直接post更新语句可以实现。</p>
+<p>8）原料准备完毕，下一步该写wacher脚本实现预警了，踩完再来补充。</p>
 
     </div>
 
@@ -332,8 +289,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/09/19/perf-between-c-java-and-dotnet/" rel="next" title="perf between c++,java and dotnet">
-                  <i class="fa fa-chevron-left"></i> perf between c++,java and dotnet
+                <a href="/2019/10/02/why-i-stop-wechat/" rel="next" title="为什么我不发朋友圈">
+                  <i class="fa fa-chevron-left"></i> 为什么我不发朋友圈
                 </a>
               
             </div>
@@ -341,10 +298,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/09/25/single-page-app-with-vue/" rel="prev" title="使用vue开发单页程序（SPA）">
-                  使用vue开发单页程序（SPA） <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -393,7 +346,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-基础之拆箱、装箱"><span class="nav-number">1.</span> <span class="nav-text">java 基础之拆箱、装箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是基本类型"><span class="nav-number">2.</span> <span class="nav-text">什么是基本类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本类型和包装类型的区别"><span class="nav-number">3.</span> <span class="nav-text">基本类型和包装类型的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装箱和拆箱"><span class="nav-number">4.</span> <span class="nav-text">装箱和拆箱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这里是答案"><span class="nav-number">5.</span> <span class="nav-text">这里是答案</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ELK日志平台"><span class="nav-number">1.</span> <span class="nav-text">ELK日志平台</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是ELK"><span class="nav-number">1.1.</span> <span class="nav-text">什么是ELK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决什么问题"><span class="nav-number">1.2.</span> <span class="nav-text">解决什么问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑之旅"><span class="nav-number">1.3.</span> <span class="nav-text">踩坑之旅</span></a></li></ol></li></ol></div>
         
       </div>
       <!--/noindex-->
