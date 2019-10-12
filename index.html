@@ -199,6 +199,108 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/12/install-ruby/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自留地">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/10/12/install-ruby/" class="post-title-link" itemprop="url">安装ruby</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-10-12 15:05:29 / Modified: 15:53:26" itemprop="dateCreated datePublished" datetime="2019-10-12T15:05:29+08:00">2019-10-12</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h2><p>不熟悉ruby，只是因为要搭建code.org的开发环境，所以要开始了解学习下了。 </p>
+<h3 id="安装ruby"><a href="#安装ruby" class="headerlink" title="安装ruby"></a>安装ruby</h3><p>最简单的方法应该是使用rbenv. 具体方法如下：</p>
+<h4 id="安装rbenv"><a href="#安装rbenv" class="headerlink" title="安装rbenv"></a>安装rbenv</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/rbenv.git ~/.rbenv</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.rbenv/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'eval "$(rbenv init -)"'</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装ruby-build"><a href="#安装ruby-build" class="headerlink" title="安装ruby-build"></a>安装ruby-build</h4><p>ruby-build 用来编译安装 Ruby 源码，如果选择手动编译，可不使用这个工具。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装需要的版本"><a href="#安装需要的版本" class="headerlink" title="安装需要的版本"></a>安装需要的版本</h4><p>查看可用的 ruby版本</p>
+<blockquote>
+<p>rbenv install –list</p>
+</blockquote>
+<p>这里从列表中选择 2.5.0 进行安装：</p>
+<blockquote>
+<p>rbenv install 2.5.0</p>
+</blockquote>
+<p>等待一会儿，安装完毕后可以查看已经安装的所有 Ruby 版本：</p>
+<blockquote>
+<p>rbenv versions</p>
+</blockquote>
+<p>设置全局版本</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rbenv global 2.1.2</span><br><span class="line">rbenv <span class="built_in">rehash</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>国内的环境你懂的，那会这么简单呢。实际上我在执行 <em>rbenv install 2.5.0</em> 就一直没反应了，看控制台输出知道是在下载<a href="https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.bz2" target="_blank" rel="noopener">ruby</a>,用wget看下，果然速度惊人（在广州节点的腾讯云上&lt;10KB/s)。</p>
+<h3 id="国内镜像"><a href="#国内镜像" class="headerlink" title="国内镜像"></a>国内镜像</h3><p>现在看来，基本所有国外包管理都有相应的国内镜像了。例如NPM有淘宝的<a href="http://npm.taobao.org/" target="_blank" rel="noopener">CNPM</a>,docker也有淘宝的，ruby的话也曾有过淘宝的，但貌似目前挂了。代替的有<a href="https://gems.ruby-china.com/" target="_blank" rel="noopener">ruby-china</a>,替换方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/andorchen/rbenv-china-mirror.git ~/.rbenv/plugins/rbenv-china-mirror</span><br></pre></td></tr></table></figure>
+
+<p>gem 替换源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gem sources --remove https://rubygems.org/</span><br><span class="line">gem sources -a https://gems.ruby-china.com</span><br></pre></td></tr></table></figure>
+
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/11/elk-platform/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1198,7 +1300,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
