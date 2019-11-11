@@ -199,6 +199,132 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/11/configure-login-ssh-with-key-on-synology/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自留地">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/11/11/configure-login-ssh-with-key-on-synology/" class="post-title-link" itemprop="url">群晖服务器免密登录</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-11 11:31:56 / Modified: 12:15:05" itemprop="dateCreated datePublished" datetime="2019-11-11T11:31:56+08:00">2019-11-11</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="本以为很简单"><a href="#本以为很简单" class="headerlink" title="本以为很简单"></a>本以为很简单</h2><p>免密登录嘛，做了很多次了，本以为很简单，不料还是耗费了不少时间（大约一个小时）。所以记录一下。</p>
+<h2 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h2><p>本机指需要登录的机器（本文指mac pro），群晖机指群晖服务器。</p>
+<ol>
+<li><p>本机生成密钥对。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; ssh-keygen</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>公钥复制到群晖机上。</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; ssh-copy-id &#123;ip&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果一切顺利，应该就是可以了。</p>
+</li>
+</ol>
+<h2 id="还是提示密码登录"><a href="#还是提示密码登录" class="headerlink" title="还是提示密码登录"></a>还是提示密码登录</h2><h3 id="看客户端日志"><a href="#看客户端日志" class="headerlink" title="看客户端日志"></a>看客户端日志</h3><p>开启调试模式登录</p>
+  <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -vvv &#123;ip&#125;</span><br></pre></td></tr></table></figure>
+
+<p>未发现异常。使用了key登录但服务器未返回。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">debug1: Offering public key: .....</span><br></pre></td></tr></table></figure>
+
+<h3 id="看服务端日志"><a href="#看服务端日志" class="headerlink" title="看服务端日志"></a>看服务端日志</h3><p>问题来了，群晖机上sshd看不到日志。需要如下操作。</p>
+<ol>
+<li><p>创建文件 <strong>/etc/syslog-ng/patterndb.d/sshd.conf</strong> ， 内容如下</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">destination d_sshd &#123; file(<span class="string">"/var/log/sshd.log"</span>); &#125;;  </span><br><span class="line"><span class="built_in">log</span> &#123; <span class="built_in">source</span>(src); filter(f_sshd); destination(d_sshd); &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置文件 <strong>/etc/syslog-ng/syslog-ng.conf</strong> , 添加内容：</p>
+ <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter f_sshd &#123; program(sshd); &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启syslog-ng。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo synoservicectl --restart syslog-ng</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新配置sshd日志级别</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SyslogFacility AUTH</span><br><span class="line">LogLevel      DEBUG</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启ssh服务,ssh有守护进程，所以直接kill即可重启。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep /usr/bin/sshd | awk &#123;&apos;print $2&apos;&#125; | xargs -I &#123;&#125; sudo kill -9 &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h3><p>上面重启ssh后在从本机登录ssh，即可看的日志 <strong>/var/log/sshd.log</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2019-11-11T11:21:42+08:00 DiskStation sshd[4050]: Authentication refused: bad ownership or modes <span class="keyword">for</span> directory /volume1/homes/admin</span><br></pre></td></tr></table></figure>
+
+<p>所以就是目录权限问题，设置如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; chmod g-w /home/admin</span><br><span class="line">&gt; chmod 700 /home/admin/.ssh</span><br><span class="line">&gt; chmod 600 /home/admin/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>重启ssh后再次尝试免密登录成功。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>ssh免密登录的问题主要有2个，一个就是目录权限，另外就是配置文件中允许密钥登录。配置文件设置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">AuthorizedKeysFile .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>这次的坑在目录权限上，我之前一致以为给足权限就可以，没想到权限太大（77x）也是不行。</p>
+<blockquote>
+<p>sshd为了安全，对属主的目录和文件权限有所要求。如果权限不对，则ssh的免密码登陆不生效。</p>
+<blockquote>
+<p>用户目录权限为 755 或者 700，就是不能是77x。<br>.ssh目录权限一般为755或者700。<br>rsa_id.pub 及authorized_keys权限一般为644<br>rsa_id权限必须为600</p>
+</blockquote>
+</blockquote>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/31/DNS-cache-pollutio/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1232,84 +1358,6 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/12/why-write-blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程序员的自留地">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/09/12/why-write-blog/" class="post-title-link" itemprop="url">为什么要写博客</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-09-12 11:37:32 / Modified: 11:50:33" itemprop="dateCreated datePublished" datetime="2019-09-12T11:37:32+08:00">2019-09-12</time>
-            </span>
-          
-            
-
-            
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。</p>
-<h2 id="1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><a href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）" class="headerlink" title="1. 学会写作Blog的技巧（teach you the skills of blogging）"></a>1. 学会写作Blog的技巧（teach you the skills of blogging）</h2><p>没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。</p>
-<h2 id="2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）"><a href="#2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）" class="headerlink" title="2. 便于更好地安排时间（help you work out how much time you have）"></a>2. 便于更好地安排时间（help you work out how much time you have）</h2><p>写作Blog花费的时间，要比大家想象的多，甚至也比我自己想象的多。但是，另一方面，每天我们又有很多时间被无谓地浪费了。坚持写作Blog的过程，也是进行更好的时间安排的过程。</p>
-<h2 id="3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）"><a href="#3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）" class="headerlink" title="3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）"></a>3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）</h2><p>很多人都有自己的爱好，但是只有当你享受到这种爱好时，你才会长期坚持下去。写作Blog可以帮助你体验到这种感觉。</p>
-<h2 id="4-便于你形成和了解自我（help-you-define-a-niche）"><a href="#4-便于你形成和了解自我（help-you-define-a-niche）" class="headerlink" title="4. 便于你形成和了解自我（help you define a niche）"></a>4. 便于你形成和了解自我（help you define a niche）</h2><p>长期写作Blog最大的好处之一就是，写着写着，你的自我会变得越来越清晰。你最终会明白自己是一个什么样的人，以及自己热爱的又是什么东西。</p>
-<h2 id="5-博客是一份好的简历"><a href="#5-博客是一份好的简历" class="headerlink" title="5. 博客是一份好的简历"></a>5. 博客是一份好的简历</h2><p>长期写下去，你博客的价值会越来越高，会认识更多的志同道合的朋友。这样不仅可以扩展你的交友圈，同样可以扩展你的眼界。</p>
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -1359,7 +1407,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
