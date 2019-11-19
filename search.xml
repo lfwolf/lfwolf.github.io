@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>群晖服务器免密登录</title>
+    <url>/2019/11/11/configure-login-ssh-with-key-on-synology/</url>
+    <content><![CDATA[<h2 id="本以为很简单"><a href="#本以为很简单" class="headerlink" title="本以为很简单"></a>本以为很简单</h2><p>免密登录嘛，做了很多次了，本以为很简单，不料还是耗费了不少时间（大约一个小时）。所以记录一下。</p>
+<h2 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h2><p>本机指需要登录的机器（本文指mac pro），群晖机指群晖服务器。</p>
+<ol>
+<li><p>本机生成密钥对。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">&gt; ssh-keygen</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>公钥复制到群晖机上。</p>
+ <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">&gt; ssh-copy-id &#123;ip&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果一切顺利，应该就是可以了。</p>
+</li>
+</ol>
+<h2 id="还是提示密码登录"><a href="#还是提示密码登录" class="headerlink" title="还是提示密码登录"></a>还是提示密码登录</h2><h3 id="看客户端日志"><a href="#看客户端日志" class="headerlink" title="看客户端日志"></a>看客户端日志</h3><p>开启调试模式登录</p>
+  <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">ssh -vvv &#123;ip&#125;</span><br></pre></td></tr></table></figure>
+
+<p>未发现异常。使用了key登录但服务器未返回。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">debug1: Offering public key: .....</span><br></pre></td></tr></table></figure>
+
+<h3 id="看服务端日志"><a href="#看服务端日志" class="headerlink" title="看服务端日志"></a>看服务端日志</h3><p>问题来了，群晖机上sshd看不到日志。需要如下操作。</p>
+<ol>
+<li><p>创建文件 <strong>/etc/syslog-ng/patterndb.d/sshd.conf</strong> ， 内容如下</p>
+ <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">destination d_sshd &#123; file(<span class="string">"/var/log/sshd.log"</span>); &#125;;  </span><br><span class="line"><span class="built_in">log</span> &#123; <span class="built_in">source</span>(src); filter(f_sshd); destination(d_sshd); &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置文件 <strong>/etc/syslog-ng/syslog-ng.conf</strong> , 添加内容：</p>
+ <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">filter f_sshd &#123; program(sshd); &#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启syslog-ng。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo synoservicectl --restart syslog-ng</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新配置sshd日志级别</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">SyslogFacility AUTH</span><br><span class="line">LogLevel      DEBUG</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启ssh服务,ssh有守护进程，所以直接kill即可重启。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ps -ef | grep /usr/bin/sshd | awk &#123;&apos;print $2&apos;&#125; | xargs -I &#123;&#125; sudo kill -9 &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h3><p>上面重启ssh后在从本机登录ssh，即可看的日志 <strong>/var/log/sshd.log</strong> </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">2019-11-11T11:21:42+08:00 DiskStation sshd[4050]: Authentication refused: bad ownership or modes <span class="keyword">for</span> directory /volume1/homes/admin</span><br></pre></td></tr></table></figure>
+
+<p>所以就是目录权限问题，设置如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; chmod g-w /home/admin</span><br><span class="line">&gt; chmod 700 /home/admin/.ssh</span><br><span class="line">&gt; chmod 600 /home/admin/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>重启ssh后再次尝试免密登录成功。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>ssh免密登录的问题主要有2个，一个就是目录权限，另外就是配置文件中允许密钥登录。配置文件设置如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">AuthorizedKeysFile .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>这次的坑在目录权限上，我之前一致以为给足权限就可以，没想到权限太大（77x）也是不行。</p>
+<blockquote>
+<p>sshd为了安全，对属主的目录和文件权限有所要求。如果权限不对，则ssh的免密码登陆不生效。</p>
+<blockquote>
+<p>用户目录权限为 755 或者 700，就是不能是77x。<br>.ssh目录权限一般为755或者700。<br>rsa_id.pub 及authorized_keys权限一般为644<br>rsa_id权限必须为600</p>
+</blockquote>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>DNS域名污染</title>
+    <url>/2019/10/31/DNS-cache-pollutio/</url>
+    <content><![CDATA[<h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>贪图便宜用了长城宽带，真是垃圾的要命。经常上网抽风，实在受不了了。不定时的替换域名。看下图<br><img src="https://ftp.bmp.ovh/imgs/2019/10/4e6958f3cf13b383.png" alt></p>
+<blockquote>
+<p><a href="https://zh.wikipedia.org/wiki/域名服务器缓存污染" target="_blank" rel="noopener">什么是域名污染?</a></p>
+</blockquote>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>先看看别人是怎么做的: </p>
+<h3 id="01-方案1"><a href="#01-方案1" class="headerlink" title="01 方案1"></a>01 方案1</h3><p><a href="https://xuanxuanblingbling.github.io/life/study/2018/12/23/DNS/" target="_blank" rel="noopener">长城宽带劫持DNS以及绕过</a></p>
+<h4 id="快速检测"><a href="#快速检测" class="headerlink" title="快速检测"></a>快速检测</h4><p>在网上找到一个办法快速检测是否你家的网络的dns遭到劫持</p>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜  ~ nslookup whether.114dns.com 114.114.114.114</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这是114家自己的黑科技，如果真的是通过114.114.114.114这台dns服务器来查询whether.114dns.com的结果是会返回给你一个公网地址的，否则会给你个回环地址，如下：</p>
+</blockquote>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜ ~ nslookup whether.114dns.com 114.114.114.114</span><br><span class="line">Server:		114.114.114.114</span><br><span class="line">Address:	114.114.114.114<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">Name:	whether.114dns.com</span><br><span class="line">Address: 127.0.0.1   //-----&gt;不正常</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>所以估计是长城宽带把所有的dns请求都拦掉了，然后换成他们的查询结果，MMP！！！也就是说你修改路由器的配置一点卵用没有</p>
+</blockquote>
+<h4 id="绕过1"><a href="#绕过1" class="headerlink" title="绕过1"></a>绕过1</h4><blockquote>
+<p>经过热心的网友提示，发现运营商们大部分都是劫持的udp53的dns查询流量，而没有动tcp的流量，所以尝试一下：nslookup -vc 可以强制使用tcp解析域名</p>
+</blockquote>
+<p>本机测试如下，看来长宽升级了，<strong>REFUSED</strong>。</p>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜ ~ nslookup -vc whether.114dns.com 114.114.114.114</span><br><span class="line">Server:		114.114.114.114</span><br><span class="line">Address:	114.114.114.114<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">** server can<span class="string">'t find whether.114dns.com: REFUSED</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="01结论"><a href="#01结论" class="headerlink" title="01结论"></a>01结论</h4><p>不能通过强制tcp解析域名。</p>
+<h3 id="02-方案2"><a href="#02-方案2" class="headerlink" title="02 方案2"></a>02 方案2</h3><p><a href="https://moe.best/tutorial/chinadns.html" target="_blank" rel="noopener">[ChinaDNS]无污染的智能路由 DNS 折腾记</a>.</p>
+<blockquote>
+<p>目前我自己已知的最容易判断的污染是(<a href="http://www.pixiv.net)，即P站域名" target="_blank" rel="noopener">www.pixiv.net)，即P站域名</a></p>
+</blockquote>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @114.114.114.114</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @114.114.114.114</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 38259</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		165	IN	A	69.171.239.11</span><br><span class="line"></span><br><span class="line">;; AUTHORITY SECTION:</span><br><span class="line">pixiv.net.		139688	IN	NS	ns2.pixiv.net.</span><br><span class="line">pixiv.net.		139688	IN	NS	ns1.pixiv.net.</span><br><span class="line"></span><br><span class="line">;; ADDITIONAL SECTION:</span><br><span class="line">ns1.pixiv.net.		96	IN	A	31.13.79.1</span><br><span class="line"></span><br><span class="line">;; Query time: 10 msec</span><br><span class="line">;; SERVER: 114.114.114.114<span class="comment">#53(114.114.114.114)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:34:45 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 99</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>国外的 DNS 是无污染的，其中比较有名的就是 OpenDNS 和 GoogleDNS，不过因为谷歌被特殊照顾，你根本无法在大陆内使用8.8.8.8（自己在本机测试下路由追踪就懂了），但是 OpenDNS 是没问题的</p>
+</blockquote>
+<p>通过 OpenDNS 208.67.222.222进行查询</p>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @208.67.222.222</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @208.67.222.222</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 53361</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 2</span><br><span class="line"></span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		216	IN	A	69.171.239.11</span><br><span class="line"></span><br><span class="line">;; AUTHORITY SECTION:</span><br><span class="line">pixiv.net.		140409	IN	NS	ns1.pixiv.net.</span><br><span class="line">pixiv.net.		140409	IN	NS	ns2.pixiv.net.</span><br><span class="line"></span><br><span class="line">;; ADDITIONAL SECTION:</span><br><span class="line">ns1.pixiv.net.		117	IN	A	31.13.79.17</span><br><span class="line">ns2.pixiv.net.		6	IN	A	69.171.232.21</span><br><span class="line"></span><br><span class="line">;; Query time: 5 msec</span><br><span class="line">;; SERVER: 208.67.222.222<span class="comment">#53(208.67.222.222)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:22:55 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 115</span><br></pre></td></tr></table></figure>
+
+<p>结果依然是被污染的</p>
+<blockquote>
+<p>有一个突破口就在于，DNS 的端口不一定只能用53</p>
+</blockquote>
+<blockquote>
+<p>幸运的是，GFW 确实只会检测53端口的 DNS 数据包，而且 OpenDNS 除了53，还提供了443和5353端口的 DNS 服务</p>
+</blockquote>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @208.67.222.222 -p 443</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @208.67.222.222 -p 443</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 30822</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; OPT PSEUDOSECTION:</span><br><span class="line">; EDNS: version: 0, flags:; udp: 4096</span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		193	IN	CNAME	pixiv.net.</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.219</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.223</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.226</span><br><span class="line"></span><br><span class="line">;; Query time: 242 msec</span><br><span class="line">;; SERVER: 208.67.222.222<span class="comment">#443(208.67.222.222)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:36:24 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 104</span><br></pre></td></tr></table></figure>
+
+<p>终于返回正确ip了。</p>
+<h4 id="为什么使用-ChinaDNS-而不是直接使用-OpenDNS"><a href="#为什么使用-ChinaDNS-而不是直接使用-OpenDNS" class="headerlink" title="为什么使用 ChinaDNS 而不是直接使用 OpenDNS"></a>为什么使用 ChinaDNS 而不是直接使用 OpenDNS</h4><blockquote>
+<p>1.我们必须使用非53端口去查询国外 DNS 才能得到没有被 GFW 篡改的正确解析结果，ChinaDNS 可以自定义使用的 DNS 的端口，而 Windows 系统的 DNS 设置定死了使用53端口<br>2.如果通过 OpenDNS 去解析国内网站，那么很可能会得到一个海外 IP（很多大公司都会配备有海外服务器供海外华人使用，例如京东啦淘宝啦B站啦），这样会导致访问国内网站访问速度很慢<br>而 ChinaDNS 可以根据 chnrouter 来判断，如果从国内 DNS 里解析到国内 IP 的话就使用，对于国外网站会过滤掉从国内 DNS 解析得到的被污染的结果，十分完美的解决了这个问题</p>
+</blockquote>
+<h3 id="腾讯云linux上部署ChinaDNS"><a href="#腾讯云linux上部署ChinaDNS" class="headerlink" title="腾讯云linux上部署ChinaDNS"></a>腾讯云linux上部署ChinaDNS</h3><p>先用tmux创建一个会话，然后执行下面脚本。<a href="https://www.cnblogs.com/kaiye/p/6275207.html" target="_blank" rel="noopener">十分钟学会tmux</a></p>
+<figure class="highlight zsh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果 Linux 上没有安装 make 和 gcc 的话要先安装</span></span><br><span class="line"><span class="comment"># Ubuntu / Debian</span></span><br><span class="line">apt-get install -y make gcc</span><br><span class="line"><span class="comment"># CentOS</span></span><br><span class="line">yum install -y make gcc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载 ChinaDNS 源码并解压编译</span></span><br><span class="line">wget --no-check-certificate  https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz</span><br><span class="line">tar -zxvf chinadns-1.3.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> chinadns-1.3.2</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新 chnrouter（必要，因为源码中自带的 chnrouter 已经很旧了）</span></span><br><span class="line">curl <span class="string">'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest'</span> | grep ipv4 | grep CN | awk -F\| <span class="string">'&#123; printf("%s/%d\n", $4, 32-log($5)/log(2)) &#125;'</span> &gt; chnroute.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新黑名单IP列表（推荐）</span></span><br><span class="line">rm -f iplist.txt &amp;&amp; wget --no-check-certificate  https://raw.githubusercontent.com/Tsuk1ko/ChinaDNS/master/iplist.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 ChinaDNS（编译好的程序在 src 目录中）</span></span><br><span class="line">src/chinadns -m -c chnroute.txt -s 114.114.114.114,208.67.222.222:443</span><br></pre></td></tr></table></figure>
+
+<p>本地机器验证下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @wxapp02</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @wxapp02</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 33448</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; OPT PSEUDOSECTION:</span><br><span class="line">; EDNS: version: 0, flags:; udp: 4096</span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		64	IN	CNAME	pixiv.net.</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.226</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.219</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.223</span><br><span class="line"></span><br><span class="line">;; Query time: 352 msec</span><br><span class="line">;; SERVER: 119.29.233.14#53(119.29.233.14)</span><br><span class="line">;; WHEN: Fri Nov 01 00:14:13 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 104</span><br></pre></td></tr></table></figure>
+
+<p>最后，设置路由器的DNS: <a href="https://club.huawei.com/thread-3710741-1-1.html" target="_blank" rel="noopener">荣耀路由器DNS设置</a></p>
+<h4 id="02结论"><a href="#02结论" class="headerlink" title="02结论"></a>02结论</h4><p>方案2解决了我的问题，不过前提是要有台<strong>云主机</strong>。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>安装ruby</title>
+    <url>/2019/10/12/install-ruby/</url>
+    <content><![CDATA[<h2 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h2><p>不熟悉ruby，只是因为要搭建code.org的开发环境，所以要开始了解学习下了。 </p>
+<h3 id="安装ruby"><a href="#安装ruby" class="headerlink" title="安装ruby"></a>安装ruby</h3><p>最简单的方法应该是使用rbenv. 具体方法如下：</p>
+<h4 id="安装rbenv"><a href="#安装rbenv" class="headerlink" title="安装rbenv"></a>安装rbenv</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/rbenv.git ~/.rbenv</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.rbenv/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'eval "$(rbenv init -)"'</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装ruby-build"><a href="#安装ruby-build" class="headerlink" title="安装ruby-build"></a>安装ruby-build</h4><p>ruby-build 用来编译安装 Ruby 源码，如果选择手动编译，可不使用这个工具。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装需要的版本"><a href="#安装需要的版本" class="headerlink" title="安装需要的版本"></a>安装需要的版本</h4><p>查看可用的 ruby版本</p>
+<blockquote>
+<p>rbenv install –list</p>
+</blockquote>
+<p>这里从列表中选择 2.5.0 进行安装：</p>
+<blockquote>
+<p>rbenv install 2.5.0</p>
+</blockquote>
+<p>等待一会儿，安装完毕后可以查看已经安装的所有 Ruby 版本：</p>
+<blockquote>
+<p>rbenv versions</p>
+</blockquote>
+<p>设置全局版本</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rbenv global 2.1.2</span><br><span class="line">rbenv <span class="built_in">rehash</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>国内的环境你懂的，那会这么简单呢。实际上我在执行 <em>rbenv install 2.5.0</em> 就一直没反应了，看控制台输出知道是在下载<a href="https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.bz2" target="_blank" rel="noopener">ruby</a>,用wget看下，果然速度惊人（在广州节点的腾讯云上&lt;10KB/s)。</p>
+<h3 id="国内镜像"><a href="#国内镜像" class="headerlink" title="国内镜像"></a>国内镜像</h3><p>现在看来，基本所有国外包管理都有相应的国内镜像了。例如NPM有淘宝的<a href="http://npm.taobao.org/" target="_blank" rel="noopener">CNPM</a>,docker也有淘宝的，ruby的话也曾有过淘宝的，但貌似目前挂了。代替的有<a href="https://gems.ruby-china.com/" target="_blank" rel="noopener">ruby-china</a>,替换方法如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/andorchen/rbenv-china-mirror.git ~/.rbenv/plugins/rbenv-china-mirror</span><br></pre></td></tr></table></figure>
+
+<p>gem 替换源</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gem sources --remove https://rubygems.org/</span><br><span class="line">gem sources -a https://gems.ruby-china.com</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>elk platform</title>
+    <url>/2019/10/11/elk-platform/</url>
+    <content><![CDATA[<h2 id="ELK日志平台"><a href="#ELK日志平台" class="headerlink" title="ELK日志平台"></a>ELK日志平台</h2><p>迁移一篇旧账。</p>
+<h3 id="什么是ELK"><a href="#什么是ELK" class="headerlink" title="什么是ELK"></a>什么是ELK</h3><p>ELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。</p>
+<h3 id="解决什么问题"><a href="#解决什么问题" class="headerlink" title="解决什么问题"></a>解决什么问题</h3><p>公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。</p>
+<p>ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通知运维。</p>
+<p>计划步骤如下：</p>
+<p>1）制定日志规范，在程序中增加日志，记录处理过程。</p>
+<p>2）部署Logstash监控日志文件。</p>
+<p>3）开发服务程序，定时查询elasticsearch，按文件名比对处理状态，例如：有发送记录，但设定时间内无接收的记录则报警。</p>
+<p>计划架构如下：</p>
+<p>logstash -&gt; elasticsearch -&gt; kibana</p>
+<h3 id="踩坑之旅"><a href="#踩坑之旅" class="headerlink" title="踩坑之旅"></a>踩坑之旅</h3><p>其实也不算坑，主要还是不了解。</p>
+<p>1）指南中说Logstash在windows环境下可能不靠谱，所以替换成Filebeat，研究一圈后发现居然没有字段提取功能，所以架构又变成</p>
+<p>Filebeat -&gt; Logstash -&gt; ElasticSearch -&gt; Kibana</p>
+<p>2）指南中看到了Kibana的watcher插件，貌似可以替代计划的3），研究一圈后要实现定时查询后遍历再匹配很难，性能估计也扛不住。</p>
+<p>3）重新审视计划，更好的方案应该是在日志写入时就匹配，匹配上后更新发送记录状态，watcher只要实现定时查询没有匹配状态的发送记录即可。</p>
+<p>4）准备开发logstash的插件，研究后发现通过logstash-input-beats/logstash-filter-grok/logstash-filter-elasticsearch/logstash-output-elasticsearch插件可实现该功能。</p>
+<p>5）logstash-filter-elasticsearch插件，原打算通过此步获取_id并在output中更新发送的日志记录，但其他值都能取到，就是没有_id，查看github源码发现</p>
+<p>只能获取’hits’][‘hits’][_source]中的内容，而_id为[‘hits’][‘hits’][‘_id’]，修改代码后OK.</p>
+<p>6）logstash-out-elasticsearch插件，通过设置document_id及action=update后可以更新成功，但把所有的接收日志信息都更新到了发送日志记录，只有</p>
+<p>另取其他插件实现了。</p>
+<p>7）logstash-out-http插件，通过该插件直接post更新语句可以实现。</p>
+<p>8）原料准备完毕，下一步该写wacher脚本实现预警了，踩完再来补充。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>为什么我不发朋友圈</title>
+    <url>/2019/10/02/why-i-stop-wechat/</url>
+    <content><![CDATA[<h2 id="读书有感"><a href="#读书有感" class="headerlink" title="读书有感"></a>读书有感</h2><p>最近看《曾国藩转》，还是深有感触的，首当其冲就是写日记自我反省的重要性。我陆续有写过几次，无论是技术的还是生活的，都未能坚持。其实还是应该每日抽出时间来做个反省当日所为。</p>
+<h2 id="关于朋友圈"><a href="#关于朋友圈" class="headerlink" title="关于朋友圈"></a>关于朋友圈</h2><p>假期在湖南游玩，今天发了个朋友圈，其实我很久没发朋友圈了。甚至关闭了微信的朋友圈功能。为什么关闭呢？我想到的理由是，微信好友里鱼龙混杂，我不想暴露自己的私生活。这固然是个理由，但其实我内心深知，原由不在此。是最近几年我一直固步自封，甚至退步了，人生没有进步，甚至吃喝玩乐都没有新意。所以我不发也不看，做个鸵鸟活着自己世界里。</p>
+<h2 id="焦虑"><a href="#焦虑" class="headerlink" title="焦虑"></a>焦虑</h2><p>人到中年，有老有小，虽然我只想当个简单的程序员，但这不现实，得更进一步了。没了工作不要紧，最怕就是把工作当退路，什么都干不好，昏昏沉沉浪费时间。</p>
+<h2 id="关于以后"><a href="#关于以后" class="headerlink" title="关于以后"></a>关于以后</h2><p>我不敢说学曾国藩立大志，但他确实给了我记录日记的勇气，而且日记就应该直面自己，深挖缺点，而不是粉饰太平。努力吧，为了更好的自己。</p>
+<h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><p>我知道写的很乱，完全不知道说什么。但我相信这只是过程。勤动脑，《尚拙》。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>wechat extension</title>
+    <url>/2019/09/30/wechat-extension/</url>
+    <content><![CDATA[<h2 id="为什么需要微信扩展"><a href="#为什么需要微信扩展" class="headerlink" title="为什么需要微信扩展"></a>为什么需要微信扩展</h2><p>这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。<br>所以我希望做个工具减轻她的公众。</p>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：</p>
+<div id="flowchart-0" class="flow-chart"></div>
+
+<h2 id="开源组件"><a href="#开源组件" class="headerlink" title="开源组件"></a>开源组件</h2><ol>
+<li>itchat: 基于微信网页版的webapi。<a href="https://github.com/littlecodersh/itchat" target="_blank" rel="noopener">code</a> <a href="https://itchat.readthedocs.io/zh/latest/" target="_blank" rel="noopener">文档</a></li>
+<li>wechaty: 基于微信网页版的webapi。<a href="https://github.com/Chatie/wechaty" target="_blank" rel="noopener">code</a></li>
+<li><strong>WeChatExtension-ForMac</strong>: 这个就比较NB了，是微信mac版的扩展，上面2个基于web api的都挂了，无法登录，目前只剩这个能用了。<a href="https://github.com/MustangYM/WeChatExtension-ForMac" target="_blank" rel="noopener">code</a></li>
+</ol>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start:>http://www.google.com[blank]
+e=>end:>http://www.google.com
+op1=>operation: 监控素材群
+sub1=>subroutine: 图片替换二维码
+sub2=>subroutine: 转发微信群
+cond=>condition: 图片消息？:>http://www.google.com
+cond1=>condition: 是否退出
+
+st->op1->cond
+cond(yes)->sub1(right)->sub2->op1
+cond(no)->cond1(yes)->e
+cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script>]]></content>
+  </entry>
+  <entry>
+    <title>prison time</title>
+    <url>/2019/09/29/prison-time/</url>
+    <content><![CDATA[<h2 id="0x01-起因"><a href="#0x01-起因" class="headerlink" title="0x01 起因"></a>0x01 起因</h2><h3 id="为什么这么久才写"><a href="#为什么这么久才写" class="headerlink" title="为什么这么久才写"></a>为什么这么久才写</h3><ol>
+<li><p>最近看到一个推送的公众号，介绍了一个程序员的牢狱之灾，大意是在猪八戒网站上接活涉嫌诈骗+开设赌场被深圳龙岗警方抓捕并关押400多天的事。看了那些照片，不由惊觉，我所度多的那八个月何其相似，是该记录一下了。</p>
+</li>
+<li><p>知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。</p>
+</li>
+</ol>
+<h3 id="究竟是什么事"><a href="#究竟是什么事" class="headerlink" title="究竟是什么事"></a>究竟是什么事</h3><p>上着班，挂着耳机，听着音乐，忽然就被抓了。</p>
+<p>由于涉嫌诈骗，我被关押看守所近8个月后，签署非法经营罪的认罪认罚取保候审，退还工资4万元，检察院最终决定不起诉。</p>
+<ol>
+<li><p>公司是做什么的？</p>
+<p>聚合支付，俗称无牌第四方支付。</p>
+</li>
+<li><p>一共多少人，都抓了，还是只有你被抓？</p>
+<p>10多人吧，抓了3个，法人、运营小姑娘、我   </p>
+</li>
+<li><p>为什么抓你们？</p>
+<p>有个下游商户是做贵金属交易平台，涉嫌诈骗，我们作为他们平台的上游支付方，所以被抓。</p>
+</li>
+<li><p>为什么只抓你们几个？</p>
+<p>时也命也。公司会给下游客户拉QQ群，我负责技术对接。公司在群里的人都被抓。没上班的就没有。所以我也无数次想过：如果那天我请个假</p>
+</li>
+<li><p>关键问题，你知不知道对方是诈骗？</p>
+<p>真不知道商户是做什么的，公司几百个商户都会拉qq群，我都在群里，但基本不说话，除非@我才会回答些纯技术问题。</p>
+</li>
+<li><p>为什么能取保并不起诉？</p>
+<p>还能为什么？是真没证据呗。等8个月来了个非法经营罪，不认罪认罚就不让取保，继续呆里面等着走流程吧，1年半都不一定能判下来。到最后来个做多久判多久，民与官斗，算了吧。</p>
+</li>
+<li><p>觉得冤枉吗？</p>
+<p>冤，真的冤。但也看开了，毕竟只是8个月，也没起诉留案底。都不够上新闻的。</p>
+</li>
+</ol>
+<h2 id="0x02-关键时间节点"><a href="#0x02-关键时间节点" class="headerlink" title="0x02 关键时间节点"></a>0x02 关键时间节点</h2><p>  2018/7/18 在公司被抓捕，押送福田区香蜜湖派出所。</p>
+<p>  2018/7/19 涉嫌诈骗刑事拘留，押送福田看守所。</p>
+<p>  2018/8/25 检察院签发逮捕令</p>
+<p>  2018/10/25 公安第一次送检</p>
+<p>  2018/11/25 检察院第一次退检</p>
+<p>  2018/12/23 公安第二次送检</p>
+<p>  2019/1/23 检察院第二次退检</p>
+<p>  2019/2/23 公安第三次送检</p>
+<p>  2019/3/15 认罪认罚，取保候审</p>
+<p>  2019/5/29 退还工资4万元</p>
+<p>  2019/6/23 检察院不起诉，完结。</p>
+<h2 id="0x03-公司业务"><a href="#0x03-公司业务" class="headerlink" title="0x03 公司业务"></a>0x03 公司业务</h2><h3 id="聚合支付"><a href="#聚合支付" class="headerlink" title="聚合支付"></a>聚合支付</h3><p>是的，就是这两年中央严管的无牌支付（俗称第四方）。简单说就是中间商，提供一个接口给下游商户，后端对接多个银行或三分的支付接口，赚钱差价和返佣金。</p>
+<h3 id="系统平台"><a href="#系统平台" class="headerlink" title="系统平台"></a>系统平台</h3><p>整套系统框架是照搬自嘉联支付，老板（法人）和股东原来就是支付公司的技术骨干，出来创业单干也就连着系统带出来了。前端采用 PHP （phalcon框架），服务端采用C++，调用lua脚本实现与上游支付接口对接，数据库采用oracle，服务器采用阿里云。我5月进公司后主要对后端框架做改造，采用java实现对接上游功能。另外计划将oracle做迁移到postegreSQL上。有空我再补上架构图。</p>
+<h3 id="2018-7-18-派出所"><a href="#2018-7-18-派出所" class="headerlink" title="2018/7/18 派出所"></a>2018/7/18 派出所</h3><p>  09:00 和往常一样我来到公司，打开电脑，和运营沟通当天的工作。老板的朋友也来到公司，他们相约当日去广州参加一个会议。</p>
+<p>  09:30 有人按门铃，说是物业，运营过去开门，一群人冲了进来，估计有10个左右，有男有女都是便衣，命令我们都不许动，随即<br>  都被加手拷，我问了句：“你们是谁，给我看看证件”，然后被当作不老实反铐双手。</p>
+<p>  11:00 随行技术人员从我电脑连着的阿里云服务器上拷贝数据，民警叫了外卖（嘉旺），但此时我哪有心情吃饭，看着手上的手铐，这一切太过魔幻而无法相信是现实了。</p>
+<p>  12:00 我请求民警将我解拷或正拷以便上厕所，但被告知钥匙被其他民警带走了。</p>
+<p>  15:00 实在憋不住了，不停尝试后双手从脚下绕道前面，终于可以上厕所了。</p>
+<p>  17:00 阿里云的数据终于拷贝完了，我们3个都被押下楼，此时还顾及颜面，那背包遮住双手，哪里想到这一走就是8个月。</p>
+<p>  18:00 到了香蜜湖看守所，一系列的拍照录指纹后，看到了其他的一些同事也被关押，大家都互相安慰，相信很快就能出去。派出所里只有2个隔间，男女分开各一件，手铐也陆续被解开了。（公司有2个办公室，我们3各在新办公室被抓，其他同事在老办公室被抓）。</p>
+<p>  23:00 陆陆续续同事都被提审了，期间有三个案子我现在还记得。</p>
+<pre><code>1. 台湾人打孩子被老婆告了，最后被治安拘留
+2. 2个女人（前任、现任）为男人打架，关进来后认怂和解了。
+3. 被同事跟踪，发现后摔了那个同事的手机（iphone），估价超3000被抓。派出所关了2天后和解。</code></pre><p>  24:00 除了我们3个，其他同事都被统一叫了出去签字释放。</p>
+<h2 id="0x05-漫漫长夜八个月"><a href="#0x05-漫漫长夜八个月" class="headerlink" title="0x05 漫漫长夜八个月"></a>0x05 漫漫长夜八个月</h2><p>TBC</p>
+<h2 id="0x06-看守所制度"><a href="#0x06-看守所制度" class="headerlink" title="0x06 看守所制度"></a>0x06 看守所制度</h2><ol>
+<li>总结一句话：犯人自治。</li>
+<li>第一天管教就会告诉新兵，墙上贴的权利、义务只是做样子，你们是犯人，没有任何权利。</li>
+<li>作息规律，<ol>
+<li>6:30 起床，</li>
+<li>7:00 吃饭，</li>
+<li>7:40 ~ 8:40 打坐，分2节</li>
+<li>9:00</li>
+</ol>
+</li>
+<li>一日三餐<ol>
+<li>早餐:一个馒头。初始2个，后减为一个。</li>
+<li>中餐:白菜就算好菜、花菜算过节。出现过（海带、南瓜等）</li>
+<li>晚餐:每周四有一次加餐，花生猪脚。</li>
+</ol>
+</li>
+<li>消费制度<ol>
+<li>每周可购物，限额200.轮值员500.</li>
+<li>若有人打架，全仓停一周购物。</li>
+<li>节假日等适当放宽额度至300。例如购买保暖内衣。</li>
+</ol>
+</li>
+<li>值班<ol>
+<li>新兵进仓连值7天，中班+2个晚班。</li>
+<li>晚班从10:00 ～6:30，每个半75分钟。提前10分钟叫醒下一班交接。</li>
+<li>值班必须站着，不能靠墙闭眼。广播一响，罚班10个起。</li>
+</ol>
+</li>
+<li>睡觉<ol>
+<li>床板是轮值+内务+老兵</li>
+<li>地板是新兵。最易起冲突的就是睡觉排位。</li>
+</ol>
+</li>
+</ol>
+<h2 id="0x07-相关文档"><a href="#0x07-相关文档" class="headerlink" title="0x07 相关文档"></a>0x07 相关文档</h2><h3 id="刑事拘留通知书"><a href="#刑事拘留通知书" class="headerlink" title="刑事拘留通知书"></a>刑事拘留通知书</h3><p>所长签字的通知书，同时也要被拘留人员签字，但都不影响流程。至今我也不明白签或不签有什么区别。</p>
+<h3 id="逮捕令"><a href="#逮捕令" class="headerlink" title="逮捕令"></a>逮捕令</h3><p>需要签字认罪/不认罪，但似乎都没有什么影响。</p>
+<h3 id="认罪认罚通知书"><a href="#认罪认罚通知书" class="headerlink" title="认罪认罚通知书"></a>认罪认罚通知书</h3><p>必须要签，否则办理不了取保候审。</p>
+<h2 id="0x08-有趣的人和事"><a href="#0x08-有趣的人和事" class="headerlink" title="0x08 有趣的人和事"></a>0x08 有趣的人和事</h2><h3 id="外国人"><a href="#外国人" class="headerlink" title="外国人"></a>外国人</h3><ol>
+<li>韩国人：入室抢劫。17年进，看守所关押近2年，2019春节前下判决送东莞国际监狱。刑期5年。</li>
+<li>乌克兰人：贩毒。小帅哥，第一次来中国，估计问题不大。</li>
+<li>越南人：非法打工。遣返。特色：好人，JJ大并塞了2个大珠子，可能是鸭。南山关一个月转福田所，2018年底遣返，关押3个月。</li>
+<li>马来西亚人：信用卡诈骗。17年进，华裔老油条，各国都坐过牢。懂普通话、闽南话、潮汕话、英语、马来语、法语。</li>
+<li>香港人：毒贩。老油条，入仓被电小JJ。涉案毒品够判无期了。不过是在交易前的对方身上查获，没证据但有案底。2019过年前转二所（深圳市第二看守所,都是刑期10年以上)</li>
+</ol>
+<h3 id="塑料兄弟情"><a href="#塑料兄弟情" class="headerlink" title="塑料兄弟情"></a>塑料兄弟情</h3><p>韩国大使馆不错，有存钱给韩国人。马来一直没钱，故一直和韩国聊天，韩国也挺仗义，基本上购物食品都和马来分。但有时也吵架，马来就和我们用中文说韩国坏话，不仗义。最后一次吵架直至韩国离开都没和好，这期间我充当韩国翻译。</p>
+<h3 id="老乡情谊"><a href="#老乡情谊" class="headerlink" title="老乡情谊"></a>老乡情谊</h3><p>刚进仓一切都陌生，还好轮值员是老乡，一米八几的大个子且壮，很照顾我。最后判决下来还前安排我当内务，虽然最后没成，但很是感激。他也是经济案判了2年半，放弃上诉了，去监狱体验一番，2020年中出狱，愿他一切安好。</p>
+<h3 id="有趣案件"><a href="#有趣案件" class="headerlink" title="有趣案件"></a>有趣案件</h3><p>案情来自闲聊，不保证真实。</p>
+<ol>
+<li>东莞仔：妹妹嫁给了黑人，黑人转钱给他，让他取给他妹妹。兄妹俩都被抓。</li>
+<li>广西仔：刚刚从韶关监狱出来，就被公安直接从大门口接到公安局，然后转看守所，神反转啊。还是两年前的盗窃案。</li>
+<li>湖南仔：城中村开了2家麻将馆被抓。</li>
+<li>四川仔：在茶馆长租了个房价开麻将馆被抓。</li>
+</ol>
+<h3 id="经济犯"><a href="#经济犯" class="headerlink" title="经济犯"></a>经济犯</h3><p>整个看守所最多的就是经济犯了，也算是深圳或者说是福田特色了。包括诈骗（电信诈骗、合同诈骗）、非吸（非法吸收公众存款）、职务侵占等、商标侵权等。</p>
+<h3 id="打架"><a href="#打架" class="headerlink" title="打架"></a>打架</h3><ol>
+<li>河南小偷 vs 广东毒贩 ：互相挨着睡，半夜互殴。</li>
+<li>江西小偷 vs 轮值员  ：被几个内务按着打了个眼充血。</li>
+</ol>
+<h2 id="0x08-回家"><a href="#0x08-回家" class="headerlink" title="0x08 回家"></a>0x08 回家</h2><p>3.15，打假日，同案共7人取保，3女4男，同公司2人，其他人不认识。其中有个东莞女孩子仅是借卡给同学。</p>
+<p>深圳市检察院检务大厅，领取取保候审单，回家。</p>
+<h2 id="0x08-感谢-amp-总结"><a href="#0x08-感谢-amp-总结" class="headerlink" title="0x08 感谢&amp;总结"></a>0x08 感谢&amp;总结</h2><p>最想感谢的是家人的支持。技术人员找工作千万谨慎，尤其是和支付、金融打交道的。我作为一个传统行业（物流相关）it人员转型互联网金融，可谓不知深浅，吃一堑长一智，长路漫漫，且行且珍惜。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>使用vue开发单页程序（SPA）</title>
+    <url>/2019/09/25/single-page-app-with-vue/</url>
+    <content><![CDATA[<h2 id="什么是单页程序SPA"><a href="#什么是单页程序SPA" class="headerlink" title="什么是单页程序SPA"></a>什么是单页程序SPA</h2><p>整个网站中只有一个页面，在这个页面中会加载很多个不同的组件，当我们点击按钮时，并不会打开一个新的页面，而是还在当前的页面中切换显示不同的组件。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>用户体验好。</li>
+<li>减轻服务器的压力</li>
+<li>前后端分离</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>首页加载会比较慢</li>
+<li>seo不友好</li>
+<li>开发难度较大</li>
+</ol>
+<h2 id="什么是vue"><a href="#什么是vue" class="headerlink" title="什么是vue"></a>什么是vue</h2><p>是一套构建用户界面的渐进式框架。</p>
+<h2 id="vue框架开发spa使用的技术"><a href="#vue框架开发spa使用的技术" class="headerlink" title="vue框架开发spa使用的技术"></a>vue框架开发spa使用的技术</h2><p>1、使用 Vue Cli 工具快速构建项目目录结构、开发环境、部署<br>2、使用 Vue-Router 实现路由，实现组件之间的切换<br>3、使用 Vuex 实现状态数据的管理<br>4、使用 axios 发送 AJAX 和服务器通信</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>java basics - box and unbox</title>
+    <url>/2019/09/20/java-basics-box-and-unbox/</url>
+    <content><![CDATA[<h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
+
+<p>看一看，想一想，答案在最后。</p>
+<h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。</p>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>包装类型</th>
+<th>字节数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>byte</td>
+<td>Byte</td>
+<td>1</td>
+</tr>
+<tr>
+<td>short</td>
+<td>Short</td>
+<td>2</td>
+</tr>
+<tr>
+<td>int</td>
+<td>Integer</td>
+<td>4</td>
+</tr>
+<tr>
+<td>float</td>
+<td>Float</td>
+<td>4</td>
+</tr>
+<tr>
+<td>long</td>
+<td>Long</td>
+<td>8</td>
+</tr>
+<tr>
+<td>double</td>
+<td>Double</td>
+<td>8</td>
+</tr>
+<tr>
+<td>char</td>
+<td>Char</td>
+<td>2</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>Boolean</td>
+<td>单独使用是4个字节，数组中又是1个字节。</td>
+</tr>
+</tbody></table>
+<h2 id="基本类型和包装类型的区别"><a href="#基本类型和包装类型的区别" class="headerlink" title="基本类型和包装类型的区别"></a>基本类型和包装类型的区别</h2><ol>
+<li>基本类型存在栈中，对象存储在堆中。</li>
+<li>初始值不同，包装类型都为null，int为0.</li>
+<li>集合中操作的只能是对象，所以必须要做装箱。</li>
+</ol>
+<h2 id="装箱和拆箱"><a href="#装箱和拆箱" class="headerlink" title="装箱和拆箱"></a>装箱和拆箱</h2><p>基本类型转包装类型（装箱）： valueOf()<br>包装类型转基本类型（拆箱）： xxxValue() [xxx代表基本数据类型]</p>
+<p>valueOf()在sdk中解释如下，注意[-128,127]范围的值将缓存</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public static Integer valueOf(int i)</span><br><span class="line">Returns an Integer instance representing the specified int value. If a new Integer instance is not required, this method should generally be used in preference to the constructor Integer(int), as this method is likely to yield significantly better space and time performance by caching frequently requested values. </span><br><span class="line">This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.</span><br><span class="line">Parameters:</span><br><span class="line">i - an int value.</span><br><span class="line">Returns:</span><br><span class="line">an Integer instance representing i.</span><br><span class="line">Since:</span><br><span class="line">1.5</span><br></pre></td></tr></table></figure>
+
+<h2 id="这里是答案"><a href="#这里是答案" class="headerlink" title="这里是答案"></a>这里是答案</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">true  //拆箱对比值相等</span><br><span class="line">true  //[-127,128]范围内整数做了缓存对比。</span><br><span class="line">true  //传引用，指向同一个对象。</span><br><span class="line">false //超出缓存值范围，不同对象引用的比较</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>perf between c++,java and dotnet</title>
+    <url>/2019/09/19/perf-between-c-java-and-dotnet/</url>
+    <content><![CDATA[<h2 id="为什么要做这个性能测试对比"><a href="#为什么要做这个性能测试对比" class="headerlink" title="为什么要做这个性能测试对比"></a>为什么要做这个性能测试对比</h2><p>一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:</p>
+<pre><code>1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。
+2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。</code></pre><p>而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形无法绘制问题，此类问题相当耗时费力。</p>
+<p>很早之前我做过C++，之后转C#，最近几年转java。很想对三者做个比较，正好看到博客园有<a href="https://www.cnblogs.com/xiaotie/p/perf-3langs.html" target="_blank" rel="noopener">相关文章</a>,所以我也动手对比了下。</p>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>MacBook Pro<br>    1. OS: macOS Mojave (10.14.6)<br>    2. CPU: 2.3 GHz Intel Core i5<br>    3. Mem: 8 GB 2133 MHz LPDDR3）<br>    4. G++: Apple LLVM version 10.0.1 (clang-1001.0.46.4)<br>    5. java: 1.8.0_202<br>    6. jvm: Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)<br>    7. .NET Core: 2.2.402</p>
+<h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>两个简单的测试用例。均是循环5000次，操作 len = 1000000 的连续内存，计算执行时间。Test1是循环赋固定值，Test2则是动态值（位置相关）。</p>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p><font color="red">Java居然比C++更快！</font><br>Dotnet Core在mac下太慢了，找机会到windows/linux下再测一遍。</p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>Test1</th>
+<th>Test2</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C++</td>
+<td>0.864638</td>
+<td>1.66328</td>
+<td>编译参数 O2优化</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>0.607</td>
+<td>1.590</td>
+<td>默认</td>
+</tr>
+<tr>
+<td>C#</td>
+<td>10.5485014</td>
+<td>13.8977086</td>
+<td>默认</td>
+</tr>
+</tbody></table>
+<h2 id="深入分析"><a href="#深入分析" class="headerlink" title="深入分析"></a>深入分析</h2><p>显然，jvm开启了超能力。要理解这一现象，就需要对Java虚拟机的机制有深入了解。HotSpot 虚拟机里内置了两个JIT编译器：Client Compiler和Server Compiler，简称为C1编译器和C2编译器。C1编译器将字节码编译为本地代码，进行简单、 可靠的优化，如有必要将加入性能监控的逻辑。C2编译会启用一些编译耗时较长的优化，甚至进行一些激进优化。</p>
+<p>查找文献可知，默认情况下，当方法调用次数+循环回边次数超过10000、计数器是int等几个简单类型、步增是常量时，会触发C2编译优化。test2恰恰满足这三种情况！</p>
+<p>java版本测试增加Test3如下,测试耗时（<font color="red">6.132s</font>）:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testpoint3</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> loops,<span class="keyword">int</span> step)</span></span>&#123; </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>;k&lt; loops;k++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt; array.length;i+=step)</span><br><span class="line">        &#123;</span><br><span class="line">            array[i] = array[i-<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：随着JVM、.Net等虚拟机技术的发展，语言特性对高性能计算性能影响越来越低，对计算机体系结构、编译原理、虚拟机编译机制的理解，对性能的影响变得更为重要。</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><ol>
+<li><p>C++</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">(<span class="keyword">int32_t</span>* p0,<span class="keyword">int</span> len)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test2</span><span class="params">(<span class="keyword">int32_t</span>* p0,<span class="keyword">int</span> len)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Hello world C++\r\n"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">1000000</span>;</span><br><span class="line">    <span class="keyword">int32_t</span>* p0 = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">clock_t</span> start,end;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    start = clock();</span><br><span class="line">    test1(p0,len);</span><br><span class="line">    <span class="comment">//需要测试运行时间的程序段</span></span><br><span class="line">    end = clock();</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"test1运行时间(s): "</span>&lt;&lt;(<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    start = clock();</span><br><span class="line">    test2(p0,len);</span><br><span class="line">    <span class="comment">//需要测试运行时间的程序段</span></span><br><span class="line">    end = clock();</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"test2运行时间(s): "</span>&lt;&lt;(<span class="keyword">double</span>)(end-start)/CLOCKS_PER_SEC&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Bye world\r\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test1</span><span class="params">(<span class="keyword">int32_t</span>* p0,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">5000</span>;k++)&#123;</span><br><span class="line">        <span class="keyword">int32_t</span>* p= p0 +<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int32_t</span>* pEnd = p + len;</span><br><span class="line">        <span class="keyword">while</span>(p &lt; pEnd)&#123;</span><br><span class="line">            *p = k;</span><br><span class="line">            p++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test2</span><span class="params">(<span class="keyword">int32_t</span>* p0,<span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;<span class="number">5000</span>;k++)&#123;</span><br><span class="line">        <span class="keyword">int32_t</span>* p= p0 +<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int32_t</span>* pEnd = p + len;</span><br><span class="line">        <span class="keyword">while</span>(p &lt; pEnd)&#123;</span><br><span class="line">            *p = *(p<span class="number">-1</span>);</span><br><span class="line">            p++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Java</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">testpoint</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello World Java"</span>);</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">1000000</span>;</span><br><span class="line">        <span class="keyword">int</span> loops = <span class="number">5000</span>;</span><br><span class="line">        <span class="keyword">int</span>[] a = <span class="keyword">new</span> <span class="keyword">int</span>[len];</span><br><span class="line">        <span class="keyword">long</span> time1=System.currentTimeMillis();	</span><br><span class="line">        testpoint1(a,loops);</span><br><span class="line">        <span class="keyword">long</span> time2=System.currentTimeMillis();	</span><br><span class="line">        System.out.println(<span class="string">"test1运行时间(ms): "</span>+(<span class="keyword">double</span>)((time2-time1)));</span><br><span class="line">        time1=System.currentTimeMillis();	</span><br><span class="line">        testpoint2(a,loops);</span><br><span class="line">        time2=System.currentTimeMillis();	</span><br><span class="line">        System.out.println(<span class="string">"test2运行时间(ms): "</span>+(time2-time1));</span><br><span class="line">        time1=System.currentTimeMillis();	</span><br><span class="line">        testpoint11(a,loops,<span class="number">1</span>);</span><br><span class="line">        time2=System.currentTimeMillis();	</span><br><span class="line">        System.out.println(<span class="string">"test11运行时间(ms): "</span>+(time2-time1));</span><br><span class="line">        time1=System.currentTimeMillis();	</span><br><span class="line">        testpoint22(a,loops,<span class="number">1</span>);</span><br><span class="line">        time2=System.currentTimeMillis();	</span><br><span class="line">        System.out.println(<span class="string">"test22运行时间(ms): "</span>+(time2-time1));</span><br><span class="line">        System.out.println(<span class="string">"Bye World Java"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testpoint1</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> loops)</span></span>&#123; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>;k&lt; loops;k++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt; array.length;i++)</span><br><span class="line">            &#123;</span><br><span class="line">                array[i] = k;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testpoint2</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> loops)</span></span>&#123; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>;k&lt; loops;k++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt; array.length;i++)</span><br><span class="line">            &#123;</span><br><span class="line">                array[i] = array[i-<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testpoint22</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> loops,<span class="keyword">int</span> step)</span></span>&#123; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>;k&lt; loops;k++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt; array.length;i+=step)</span><br><span class="line">            &#123;</span><br><span class="line">                array[i] = array[i-<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testpoint11</span><span class="params">(<span class="keyword">int</span>[] array,<span class="keyword">int</span> loops,<span class="keyword">int</span> step)</span></span>&#123; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>;k&lt; loops;k++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt; array.length;i+=step)</span><br><span class="line">            &#123;</span><br><span class="line">                array[i] = k;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C#</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Diagnostics;</span><br><span class="line">namespace testpoint</span><br><span class="line">&#123;</span><br><span class="line">    class Program</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;Hello World C#!&quot;);</span><br><span class="line">            Stopwatch stopwatch = new Stopwatch();</span><br><span class="line">            int len = 1000000;</span><br><span class="line">            int loops = 5000;</span><br><span class="line">            int[] a = new int[len];</span><br><span class="line">            stopwatch.Start();</span><br><span class="line">            testpoint1(a, loops);</span><br><span class="line">            stopwatch.Stop();</span><br><span class="line">            Console.WriteLine(&quot;test1运行时间(s): &quot; + stopwatch.Elapsed.TotalSeconds);</span><br><span class="line">            stopwatch.Restart();</span><br><span class="line">            testpoint2(a, loops);</span><br><span class="line">            stopwatch.Stop();</span><br><span class="line">            Console.WriteLine(&quot;test2运行时间(s): &quot; + stopwatch.Elapsed.TotalSeconds);</span><br><span class="line">            Console.WriteLine(&quot;Bye World C#&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public static void testpoint1(int[] array, int loops)</span><br><span class="line">        &#123;</span><br><span class="line">            for (int k = 0; k &lt; loops; k++)</span><br><span class="line">            &#123;</span><br><span class="line">                for (int i = 1; i &lt; array.Length; i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    array[i] = k;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        public static void testpoint2(int[] array, int loops)</span><br><span class="line">        &#123;</span><br><span class="line">            for (int k = 0; k &lt; loops; k++)</span><br><span class="line">            &#123;</span><br><span class="line">                for (int i = 1; i &lt; array.Length; i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    array[i] = array[i - 1];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
+    <title>为什么要写博客</title>
+    <url>/2019/09/12/why-write-blog/</url>
+    <content><![CDATA[<p>断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。</p>
+<h2 id="1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><a href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）" class="headerlink" title="1. 学会写作Blog的技巧（teach you the skills of blogging）"></a>1. 学会写作Blog的技巧（teach you the skills of blogging）</h2><p>没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。</p>
+<h2 id="2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）"><a href="#2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）" class="headerlink" title="2. 便于更好地安排时间（help you work out how much time you have）"></a>2. 便于更好地安排时间（help you work out how much time you have）</h2><p>写作Blog花费的时间，要比大家想象的多，甚至也比我自己想象的多。但是，另一方面，每天我们又有很多时间被无谓地浪费了。坚持写作Blog的过程，也是进行更好的时间安排的过程。</p>
+<h2 id="3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）"><a href="#3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）" class="headerlink" title="3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）"></a>3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）</h2><p>很多人都有自己的爱好，但是只有当你享受到这种爱好时，你才会长期坚持下去。写作Blog可以帮助你体验到这种感觉。</p>
+<h2 id="4-便于你形成和了解自我（help-you-define-a-niche）"><a href="#4-便于你形成和了解自我（help-you-define-a-niche）" class="headerlink" title="4. 便于你形成和了解自我（help you define a niche）"></a>4. 便于你形成和了解自我（help you define a niche）</h2><p>长期写作Blog最大的好处之一就是，写着写着，你的自我会变得越来越清晰。你最终会明白自己是一个什么样的人，以及自己热爱的又是什么东西。</p>
+<h2 id="5-博客是一份好的简历"><a href="#5-博客是一份好的简历" class="headerlink" title="5. 博客是一份好的简历"></a>5. 博客是一份好的简历</h2><p>长期写下去，你博客的价值会越来越高，会认识更多的志同道合的朋友。这样不仅可以扩展你的交友圈，同样可以扩展你的眼界。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2019/09/12/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+</search>
