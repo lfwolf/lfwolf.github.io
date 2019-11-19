@@ -229,7 +229,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/11/configure-login-ssh-with-key-on-synology/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -255,11 +255,19 @@
                 
               
 
-              <time title="Created: 2019-11-11 11:31:56 / Modified: 14:42:06" itemprop="dateCreated datePublished" datetime="2019-11-11T11:31:56+08:00">2019-11-11</time>
+              <time title="Created: 2019-11-11 11:31:56" itemprop="dateCreated datePublished" datetime="2019-11-11T11:31:56+08:00">2019-11-11</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-19 14:58:26" itemprop="dateModified" datetime="2019-11-19T14:58:26+08:00">2019-11-19</time>
+              </span>
             
           
 
@@ -275,60 +283,15 @@
 
       
           <h2 id="本以为很简单"><a href="#本以为很简单" class="headerlink" title="本以为很简单"></a>本以为很简单</h2><p>免密登录嘛，做了很多次了，本以为很简单，不料还是耗费了不少时间（大约一个小时）。所以记录一下。</p>
-<h2 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h2><p>本机指需要登录的机器（本文指mac pro），群晖机指群晖服务器。</p>
-<ol>
-<li><p>本机生成密钥对。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; ssh-keygen</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>公钥复制到群晖机上。</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; ssh-copy-id &#123;ip&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果一切顺利，应该就是可以了。</p>
-</li>
-</ol>
-<h2 id="还是提示密码登录"><a href="#还是提示密码登录" class="headerlink" title="还是提示密码登录"></a>还是提示密码登录</h2><h3 id="看客户端日志"><a href="#看客户端日志" class="headerlink" title="看客户端日志"></a>看客户端日志</h3><p>开启调试模式登录</p>
-  <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -vvv &#123;ip&#125;</span><br></pre></td></tr></table></figure>
-
-<p>未发现异常。使用了key登录但服务器未返回。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">debug1: Offering public key: .....</span><br></pre></td></tr></table></figure>
-
-<h3 id="看服务端日志"><a href="#看服务端日志" class="headerlink" title="看服务端日志"></a>看服务端日志</h3><p>问题来了，群晖机上sshd看不到日志。需要如下操作。</p>
-<ol>
-<li><p>创建文件 <strong>/etc/syslog-ng/patterndb.d/sshd.conf</strong> ， 内容如下</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">destination d_sshd &#123; file(<span class="string">"/var/log/sshd.log"</span>); &#125;;  </span><br><span class="line"><span class="built_in">log</span> &#123; <span class="built_in">source</span>(src); filter(f_sshd); destination(d_sshd); &#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改配置文件 <strong>/etc/syslog-ng/syslog-ng.conf</strong> , 添加内容：</p>
- <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter f_sshd &#123; program(sshd); &#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>重启syslog-ng。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo synoservicectl --restart syslog-ng</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>更新配置sshd日志级别</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SyslogFacility AUTH</span><br><span class="line">LogLevel      DEBUG</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>重启ssh服务,ssh有守护进程，所以直接kill即可重启。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep /usr/bin/sshd | awk &#123;&apos;print $2&apos;&#125; | xargs -I &#123;&#125; sudo kill -9 &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h3><p>上面重启ssh后在从本机登录ssh，即可看的日志 <strong>/var/log/sshd.log</strong> </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2019-11-11T11:21:42+08:00 DiskStation sshd[4050]: Authentication refused: bad ownership or modes <span class="keyword">for</span> directory /volume1/homes/admin</span><br></pre></td></tr></table></figure>
-
-<p>所以就是目录权限问题，设置如下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; chmod g-w /home/admin</span><br><span class="line">&gt; chmod 700 /home/admin/.ssh</span><br><span class="line">&gt; chmod 600 /home/admin/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
-
-<p>重启ssh后再次尝试免密登录成功。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>ssh免密登录的问题主要有2个，一个就是目录权限，另外就是配置文件中允许密钥登录。配置文件设置如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RSAAuthentication yes</span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">AuthorizedKeysFile .ssh/authorized_keys</span><br></pre></td></tr></table></figure>
-
-<p>这次的坑在目录权限上，我之前一致以为给足权限就可以，没想到权限太大（77x）也是不行。</p>
-<blockquote>
-<p>sshd为了安全，对属主的目录和文件权限有所要求。如果权限不对，则ssh的免密码登陆不生效。</p>
-<blockquote>
-<p>用户目录权限为 755 或者 700，就是不能是77x。<br>.ssh目录权限一般为755或者700。<br>rsa_id.pub 及authorized_keys权限一般为644<br>rsa_id权限必须为600</p>
-</blockquote>
-</blockquote>
-
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/11/11/configure-login-ssh-with-key-on-synology/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -355,7 +318,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/31/DNS-cache-pollutio/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -392,7 +355,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-01 00:25:52" itemprop="dateModified" datetime="2019-11-01T00:25:52+08:00">2019-11-01</time>
+                <time title="Modified: 2019-11-19 15:00:34" itemprop="dateModified" datetime="2019-11-19T15:00:34+08:00">2019-11-19</time>
               </span>
             
           
@@ -409,63 +372,15 @@
 
       
           <h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>贪图便宜用了长城宽带，真是垃圾的要命。经常上网抽风，实在受不了了。不定时的替换域名。看下图<br><img src="https://ftp.bmp.ovh/imgs/2019/10/4e6958f3cf13b383.png" alt></p>
-<blockquote>
-<p><a href="https://zh.wikipedia.org/wiki/域名服务器缓存污染" target="_blank" rel="noopener">什么是域名污染?</a></p>
-</blockquote>
-<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>先看看别人是怎么做的: </p>
-<h3 id="01-方案1"><a href="#01-方案1" class="headerlink" title="01 方案1"></a>01 方案1</h3><p><a href="https://xuanxuanblingbling.github.io/life/study/2018/12/23/DNS/" target="_blank" rel="noopener">长城宽带劫持DNS以及绕过</a></p>
-<h4 id="快速检测"><a href="#快速检测" class="headerlink" title="快速检测"></a>快速检测</h4><p>在网上找到一个办法快速检测是否你家的网络的dns遭到劫持</p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ nslookup whether.114dns.com 114.114.114.114</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这是114家自己的黑科技，如果真的是通过114.114.114.114这台dns服务器来查询whether.114dns.com的结果是会返回给你一个公网地址的，否则会给你个回环地址，如下：</p>
-</blockquote>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ nslookup whether.114dns.com 114.114.114.114</span><br><span class="line">Server:		114.114.114.114</span><br><span class="line">Address:	114.114.114.114<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">Name:	whether.114dns.com</span><br><span class="line">Address: 127.0.0.1   //-----&gt;不正常</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>所以估计是长城宽带把所有的dns请求都拦掉了，然后换成他们的查询结果，MMP！！！也就是说你修改路由器的配置一点卵用没有</p>
-</blockquote>
-<h4 id="绕过1"><a href="#绕过1" class="headerlink" title="绕过1"></a>绕过1</h4><blockquote>
-<p>经过热心的网友提示，发现运营商们大部分都是劫持的udp53的dns查询流量，而没有动tcp的流量，所以尝试一下：nslookup -vc 可以强制使用tcp解析域名</p>
-</blockquote>
-<p>本机测试如下，看来长宽升级了，<strong>REFUSED</strong>。</p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ nslookup -vc whether.114dns.com 114.114.114.114</span><br><span class="line">Server:		114.114.114.114</span><br><span class="line">Address:	114.114.114.114<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">** server can<span class="string">'t find whether.114dns.com: REFUSED</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="01结论"><a href="#01结论" class="headerlink" title="01结论"></a>01结论</h4><p>不能通过强制tcp解析域名。</p>
-<h3 id="02-方案2"><a href="#02-方案2" class="headerlink" title="02 方案2"></a>02 方案2</h3><p><a href="https://moe.best/tutorial/chinadns.html" target="_blank" rel="noopener">[ChinaDNS]无污染的智能路由 DNS 折腾记</a>.</p>
-<blockquote>
-<p>目前我自己已知的最容易判断的污染是(<a href="http://www.pixiv.net)，即P站域名" target="_blank" rel="noopener">www.pixiv.net)，即P站域名</a></p>
-</blockquote>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @114.114.114.114</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @114.114.114.114</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 38259</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		165	IN	A	69.171.239.11</span><br><span class="line"></span><br><span class="line">;; AUTHORITY SECTION:</span><br><span class="line">pixiv.net.		139688	IN	NS	ns2.pixiv.net.</span><br><span class="line">pixiv.net.		139688	IN	NS	ns1.pixiv.net.</span><br><span class="line"></span><br><span class="line">;; ADDITIONAL SECTION:</span><br><span class="line">ns1.pixiv.net.		96	IN	A	31.13.79.1</span><br><span class="line"></span><br><span class="line">;; Query time: 10 msec</span><br><span class="line">;; SERVER: 114.114.114.114<span class="comment">#53(114.114.114.114)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:34:45 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 99</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>国外的 DNS 是无污染的，其中比较有名的就是 OpenDNS 和 GoogleDNS，不过因为谷歌被特殊照顾，你根本无法在大陆内使用8.8.8.8（自己在本机测试下路由追踪就懂了），但是 OpenDNS 是没问题的</p>
-</blockquote>
-<p>通过 OpenDNS 208.67.222.222进行查询</p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @208.67.222.222</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @208.67.222.222</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 53361</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 2</span><br><span class="line"></span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		216	IN	A	69.171.239.11</span><br><span class="line"></span><br><span class="line">;; AUTHORITY SECTION:</span><br><span class="line">pixiv.net.		140409	IN	NS	ns1.pixiv.net.</span><br><span class="line">pixiv.net.		140409	IN	NS	ns2.pixiv.net.</span><br><span class="line"></span><br><span class="line">;; ADDITIONAL SECTION:</span><br><span class="line">ns1.pixiv.net.		117	IN	A	31.13.79.17</span><br><span class="line">ns2.pixiv.net.		6	IN	A	69.171.232.21</span><br><span class="line"></span><br><span class="line">;; Query time: 5 msec</span><br><span class="line">;; SERVER: 208.67.222.222<span class="comment">#53(208.67.222.222)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:22:55 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 115</span><br></pre></td></tr></table></figure>
-
-<p>结果依然是被污染的</p>
-<blockquote>
-<p>有一个突破口就在于，DNS 的端口不一定只能用53</p>
-</blockquote>
-<blockquote>
-<p>幸运的是，GFW 确实只会检测53端口的 DNS 数据包，而且 OpenDNS 除了53，还提供了443和5353端口的 DNS 服务</p>
-</blockquote>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @208.67.222.222 -p 443</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @208.67.222.222 -p 443</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 30822</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; OPT PSEUDOSECTION:</span><br><span class="line">; EDNS: version: 0, flags:; udp: 4096</span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		193	IN	CNAME	pixiv.net.</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.219</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.223</span><br><span class="line">pixiv.net.		193	IN	A	210.140.131.226</span><br><span class="line"></span><br><span class="line">;; Query time: 242 msec</span><br><span class="line">;; SERVER: 208.67.222.222<span class="comment">#443(208.67.222.222)</span></span><br><span class="line">;; WHEN: Thu Oct 31 23:36:24 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 104</span><br></pre></td></tr></table></figure>
-
-<p>终于返回正确ip了。</p>
-<h4 id="为什么使用-ChinaDNS-而不是直接使用-OpenDNS"><a href="#为什么使用-ChinaDNS-而不是直接使用-OpenDNS" class="headerlink" title="为什么使用 ChinaDNS 而不是直接使用 OpenDNS"></a>为什么使用 ChinaDNS 而不是直接使用 OpenDNS</h4><blockquote>
-<p>1.我们必须使用非53端口去查询国外 DNS 才能得到没有被 GFW 篡改的正确解析结果，ChinaDNS 可以自定义使用的 DNS 的端口，而 Windows 系统的 DNS 设置定死了使用53端口<br>2.如果通过 OpenDNS 去解析国内网站，那么很可能会得到一个海外 IP（很多大公司都会配备有海外服务器供海外华人使用，例如京东啦淘宝啦B站啦），这样会导致访问国内网站访问速度很慢<br>而 ChinaDNS 可以根据 chnrouter 来判断，如果从国内 DNS 里解析到国内 IP 的话就使用，对于国外网站会过滤掉从国内 DNS 解析得到的被污染的结果，十分完美的解决了这个问题</p>
-</blockquote>
-<h3 id="腾讯云linux上部署ChinaDNS"><a href="#腾讯云linux上部署ChinaDNS" class="headerlink" title="腾讯云linux上部署ChinaDNS"></a>腾讯云linux上部署ChinaDNS</h3><p>先用tmux创建一个会话，然后执行下面脚本。<a href="https://www.cnblogs.com/kaiye/p/6275207.html" target="_blank" rel="noopener">十分钟学会tmux</a></p>
-<figure class="highlight zsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果 Linux 上没有安装 make 和 gcc 的话要先安装</span></span><br><span class="line"><span class="comment"># Ubuntu / Debian</span></span><br><span class="line">apt-get install -y make gcc</span><br><span class="line"><span class="comment"># CentOS</span></span><br><span class="line">yum install -y make gcc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载 ChinaDNS 源码并解压编译</span></span><br><span class="line">wget --no-check-certificate  https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz</span><br><span class="line">tar -zxvf chinadns-1.3.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> chinadns-1.3.2</span><br><span class="line">./configure &amp;&amp; make</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新 chnrouter（必要，因为源码中自带的 chnrouter 已经很旧了）</span></span><br><span class="line">curl <span class="string">'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest'</span> | grep ipv4 | grep CN | awk -F\| <span class="string">'&#123; printf("%s/%d\n", $4, 32-log($5)/log(2)) &#125;'</span> &gt; chnroute.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新黑名单IP列表（推荐）</span></span><br><span class="line">rm -f iplist.txt &amp;&amp; wget --no-check-certificate  https://raw.githubusercontent.com/Tsuk1ko/ChinaDNS/master/iplist.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动 ChinaDNS（编译好的程序在 src 目录中）</span></span><br><span class="line">src/chinadns -m -c chnroute.txt -s 114.114.114.114,208.67.222.222:443</span><br></pre></td></tr></table></figure>
-
-<p>本地机器验证下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜ ~ dig www.pixiv.net @wxapp02</span><br><span class="line"></span><br><span class="line">; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; www.pixiv.net @wxapp02</span><br><span class="line">;; global options: +cmd</span><br><span class="line">;; Got answer:</span><br><span class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 33448</span><br><span class="line">;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span><br><span class="line"></span><br><span class="line">;; OPT PSEUDOSECTION:</span><br><span class="line">; EDNS: version: 0, flags:; udp: 4096</span><br><span class="line">;; QUESTION SECTION:</span><br><span class="line">;www.pixiv.net.			IN	A</span><br><span class="line"></span><br><span class="line">;; ANSWER SECTION:</span><br><span class="line">www.pixiv.net.		64	IN	CNAME	pixiv.net.</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.226</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.219</span><br><span class="line">pixiv.net.		140	IN	A	210.140.131.223</span><br><span class="line"></span><br><span class="line">;; Query time: 352 msec</span><br><span class="line">;; SERVER: 119.29.233.14#53(119.29.233.14)</span><br><span class="line">;; WHEN: Fri Nov 01 00:14:13 CST 2019</span><br><span class="line">;; MSG SIZE  rcvd: 104</span><br></pre></td></tr></table></figure>
-
-<p>最后，设置路由器的DNS: <a href="https://club.huawei.com/thread-3710741-1-1.html" target="_blank" rel="noopener">荣耀路由器DNS设置</a></p>
-<h4 id="02结论"><a href="#02结论" class="headerlink" title="02结论"></a>02结论</h4><p>方案2解决了我的问题，不过前提是要有台<strong>云主机</strong>。</p>
-
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/10/31/DNS-cache-pollutio/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -492,7 +407,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/12/install-ruby/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -594,7 +509,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/11/elk-platform/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -620,11 +535,19 @@
                 
               
 
-              <time title="Created: 2019-10-11 18:01:30 / Modified: 18:04:35" itemprop="dateCreated datePublished" datetime="2019-10-11T18:01:30+08:00">2019-10-11</time>
+              <time title="Created: 2019-10-11 18:01:30" itemprop="dateCreated datePublished" datetime="2019-10-11T18:01:30+08:00">2019-10-11</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-19 14:59:17" itemprop="dateModified" datetime="2019-11-19T14:59:17+08:00">2019-11-19</time>
+              </span>
             
           
 
@@ -641,27 +564,15 @@
       
           <h2 id="ELK日志平台"><a href="#ELK日志平台" class="headerlink" title="ELK日志平台"></a>ELK日志平台</h2><p>迁移一篇旧账。</p>
 <h3 id="什么是ELK"><a href="#什么是ELK" class="headerlink" title="什么是ELK"></a>什么是ELK</h3><p>ELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。</p>
-<h3 id="解决什么问题"><a href="#解决什么问题" class="headerlink" title="解决什么问题"></a>解决什么问题</h3><p>公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。</p>
-<p>ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通知运维。</p>
-<p>计划步骤如下：</p>
-<p>1）制定日志规范，在程序中增加日志，记录处理过程。</p>
-<p>2）部署Logstash监控日志文件。</p>
-<p>3）开发服务程序，定时查询elasticsearch，按文件名比对处理状态，例如：有发送记录，但设定时间内无接收的记录则报警。</p>
-<p>计划架构如下：</p>
-<p>logstash -&gt; elasticsearch -&gt; kibana</p>
-<h3 id="踩坑之旅"><a href="#踩坑之旅" class="headerlink" title="踩坑之旅"></a>踩坑之旅</h3><p>其实也不算坑，主要还是不了解。</p>
-<p>1）指南中说Logstash在windows环境下可能不靠谱，所以替换成Filebeat，研究一圈后发现居然没有字段提取功能，所以架构又变成</p>
-<p>Filebeat -&gt; Logstash -&gt; ElasticSearch -&gt; Kibana</p>
-<p>2）指南中看到了Kibana的watcher插件，貌似可以替代计划的3），研究一圈后要实现定时查询后遍历再匹配很难，性能估计也扛不住。</p>
-<p>3）重新审视计划，更好的方案应该是在日志写入时就匹配，匹配上后更新发送记录状态，watcher只要实现定时查询没有匹配状态的发送记录即可。</p>
-<p>4）准备开发logstash的插件，研究后发现通过logstash-input-beats/logstash-filter-grok/logstash-filter-elasticsearch/logstash-output-elasticsearch插件可实现该功能。</p>
-<p>5）logstash-filter-elasticsearch插件，原打算通过此步获取_id并在output中更新发送的日志记录，但其他值都能取到，就是没有_id，查看github源码发现</p>
-<p>只能获取’hits’][‘hits’][_source]中的内容，而_id为[‘hits’][‘hits’][‘_id’]，修改代码后OK.</p>
-<p>6）logstash-out-elasticsearch插件，通过设置document_id及action=update后可以更新成功，但把所有的接收日志信息都更新到了发送日志记录，只有</p>
-<p>另取其他插件实现了。</p>
-<p>7）logstash-out-http插件，通过该插件直接post更新语句可以实现。</p>
-<p>8）原料准备完毕，下一步该写wacher脚本实现预警了，踩完再来补充。</p>
-
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/10/11/elk-platform/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -688,7 +599,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/02/why-i-stop-wechat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -765,7 +676,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/30/wechat-extension/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -857,7 +768,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/29/prison-time/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1046,7 +957,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/25/single-page-app-with-vue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1131,7 +1042,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1268,7 +1179,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/19/perf-between-c-java-and-dotnet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Felix Lee">
+      <meta itemprop="name" content="Feng Li">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
@@ -1426,7 +1337,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">Felix Lee</p>
+  <p class="site-author-name" itemprop="name">Feng Li</p>
   <div class="site-description" itemprop="description"></div>
 </div>
   <nav class="site-state motion-element">
@@ -1440,6 +1351,41 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
       </div>
     
   </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/wycodexyz" title="GitHub &rarr; https://github.com/wycodexyz" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:wycodexyz@gmail.com" title="E-Mail &rarr; mailto:wycodexyz@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/wycodexyz" title="Twitter &rarr; https://twitter.com/wycodexyz" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
 
 
 
@@ -1459,7 +1405,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Felix Lee</span>
+  <span class="author" itemprop="copyrightHolder">Feng Li</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
   <span class="post-meta-divider">|</span>
@@ -1474,6 +1420,14 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
 
 
 
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=66490293";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -1486,6 +1440,9 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   
 
 
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>

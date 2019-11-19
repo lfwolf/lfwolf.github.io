@@ -4,6 +4,8 @@
     <title>群晖服务器免密登录</title>
     <url>/2019/11/11/configure-login-ssh-with-key-on-synology/</url>
     <content><![CDATA[<h2 id="本以为很简单"><a href="#本以为很简单" class="headerlink" title="本以为很简单"></a>本以为很简单</h2><p>免密登录嘛，做了很多次了，本以为很简单，不料还是耗费了不少时间（大约一个小时）。所以记录一下。</p>
+<a id="more"></a>
+
 <h2 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h2><p>本机指需要登录的机器（本文指mac pro），群晖机指群晖服务器。</p>
 <ol>
 <li><p>本机生成密钥对。</p>
@@ -63,6 +65,8 @@
     <title>DNS域名污染</title>
     <url>/2019/10/31/DNS-cache-pollutio/</url>
     <content><![CDATA[<h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>贪图便宜用了长城宽带，真是垃圾的要命。经常上网抽风，实在受不了了。不定时的替换域名。看下图<br><img src="https://ftp.bmp.ovh/imgs/2019/10/4e6958f3cf13b383.png" alt></p>
+<a id="more"></a>
+
 <blockquote>
 <p><a href="https://zh.wikipedia.org/wiki/域名服务器缓存污染" target="_blank" rel="noopener">什么是域名污染?</a></p>
 </blockquote>
@@ -161,6 +165,8 @@
     <url>/2019/10/11/elk-platform/</url>
     <content><![CDATA[<h2 id="ELK日志平台"><a href="#ELK日志平台" class="headerlink" title="ELK日志平台"></a>ELK日志平台</h2><p>迁移一篇旧账。</p>
 <h3 id="什么是ELK"><a href="#什么是ELK" class="headerlink" title="什么是ELK"></a>什么是ELK</h3><p>ELK指的是ElasticSearch，Logstash，Kibana这三个工具的首字母缩写，中文指南很详细，按其步骤来，入门基本没啥问题。</p>
+<a id="more"></a>
+
 <h3 id="解决什么问题"><a href="#解决什么问题" class="headerlink" title="解决什么问题"></a>解决什么问题</h3><p>公司产品EDI平台的主要任务就是将各个数据源的文件信息处理后再发送第三方，没有实时监控，文件发送不成功时，运维相当被动。</p>
 <p>ELK的强项就是实时的日志分析，通过对日志文件的分析（秒级）对比，及时将异常情况通知运维。</p>
 <p>计划步骤如下：</p>
