@@ -55,17 +55,17 @@
   };
 </script>
 
-  <meta name="description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种: 1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图">
+  <meta name="description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形">
 <meta property="og:type" content="article">
 <meta property="og:title" content="perf between c++,java and dotnet">
 <meta property="og:url" content="http://yoursite.com/2019/09/19/perf-between-c-java-and-dotnet/index.html">
 <meta property="og:site_name" content="程序员的自留地">
-<meta property="og:description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种: 1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图">
+<meta property="og:description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-09-19T15:01:35.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="perf between c++,java and dotnet">
-<meta name="twitter:description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种: 1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图">
+<meta name="twitter:description" content="为什么要做这个性能测试对比一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。 2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形">
   <link rel="canonical" href="http://yoursite.com/2019/09/19/perf-between-c-java-and-dotnet/">
 
 
@@ -170,6 +170,17 @@
       
       
         
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
         <li class="menu-item menu-item-archives">
       
     
@@ -268,6 +279,14 @@
           
 
           
+            <span class="post-meta-item" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
 
         </div>
       </header>
@@ -278,9 +297,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="为什么要做这个性能测试对比"><a href="#为什么要做这个性能测试对比" class="headerlink" title="为什么要做这个性能测试对比"></a>为什么要做这个性能测试对比</h2><p>一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:</p>
-<pre><code>1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。
-2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。</code></pre><p>而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形无法绘制问题，此类问题相当耗时费力。</p>
+        <h2 id="为什么要做这个性能测试对比"><a href="#为什么要做这个性能测试对比" class="headerlink" title="为什么要做这个性能测试对比"></a>为什么要做这个性能测试对比</h2><p>一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:</p><pre><code>1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。
+2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。</code></pre><p>而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形无法绘制问题，此类问题相当耗时费力。</p><a id="more"></a>
+
 <p>很早之前我做过C++，之后转C#，最近几年转java。很想对三者做个比较，正好看到博客园有<a href="https://www.cnblogs.com/xiaotie/p/perf-3langs.html" target="_blank" rel="noopener">相关文章</a>,所以我也动手对比了下。</p>
 <h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>MacBook Pro<br>    1. OS: macOS Mojave (10.14.6)<br>    2. CPU: 2.3 GHz Intel Core i5<br>    3. Mem: 8 GB 2133 MHz LPDDR3）<br>    4. G++: Apple LLVM version 10.0.1 (clang-1001.0.46.4)<br>    5. java: 1.8.0_202<br>    6. jvm: Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)<br>    7. .NET Core: 2.2.402</p>
 <h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>两个简单的测试用例。均是循环5000次，操作 len = 1000000 的连续内存，计算执行时间。Test1是循环赋固定值，Test2则是动态值（位置相关）。</p>
@@ -490,6 +509,25 @@
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
 
 
 

@@ -55,17 +55,17 @@
   };
 </script>
 
-  <meta name="description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+  <meta name="description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.pr">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java basics - box and unbox">
 <meta property="og:url" content="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/index.html">
 <meta property="og:site_name" content="程序员的自留地">
-<meta property="og:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+<meta property="og:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.pr">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-09-20T15:51:32.665Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java basics - box and unbox">
-<meta name="twitter:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。 12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.p">
+<meta name="twitter:description" content="java 基础之拆箱、装箱先看看下面的代码，有疑问再继续看。12345678910int a = 10;Integer b = 10;System.Out.println(a == b); // true or false ?Integer c = 10;System.out.println(b == c); // true or false ?b = c  = 150;System.out.pr">
   <link rel="canonical" href="http://yoursite.com/2019/09/20/java-basics-box-and-unbox/">
 
 
@@ -170,6 +170,17 @@
       
       
         
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
         <li class="menu-item menu-item-archives">
       
     
@@ -268,6 +279,14 @@
           
 
           
+            <span class="post-meta-item" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
 
         </div>
       </header>
@@ -278,8 +297,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
+        <h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
 
 <p>看一看，想一想，答案在最后。</p>
 <h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。</p>
@@ -502,6 +521,25 @@
   <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
 
 
 

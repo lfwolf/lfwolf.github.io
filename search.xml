@@ -128,9 +128,9 @@
   <entry>
     <title>安装ruby</title>
     <url>/2019/10/12/install-ruby/</url>
-    <content><![CDATA[<h2 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h2><p>不熟悉ruby，只是因为要搭建code.org的开发环境，所以要开始了解学习下了。 </p>
-<h3 id="安装ruby"><a href="#安装ruby" class="headerlink" title="安装ruby"></a>安装ruby</h3><p>最简单的方法应该是使用rbenv. 具体方法如下：</p>
-<h4 id="安装rbenv"><a href="#安装rbenv" class="headerlink" title="安装rbenv"></a>安装rbenv</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/rbenv.git ~/.rbenv</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.rbenv/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'eval "$(rbenv init -)"'</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h2 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h2><p>不熟悉ruby，只是因为要搭建code.org的开发环境，所以要开始了解学习下了。 </p><h3 id="安装ruby"><a href="#安装ruby" class="headerlink" title="安装ruby"></a>安装ruby</h3><p>最简单的方法应该是使用rbenv. 具体方法如下：</p><h4 id="安装rbenv"><a href="#安装rbenv" class="headerlink" title="安装rbenv"></a>安装rbenv</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/rbenv.git ~/.rbenv</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.rbenv/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">'eval "$(rbenv init -)"'</span> &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
 
 <h4 id="安装ruby-build"><a href="#安装ruby-build" class="headerlink" title="安装ruby-build"></a>安装ruby-build</h4><p>ruby-build 用来编译安装 Ruby 源码，如果选择手动编译，可不使用这个工具。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build</span><br></pre></td></tr></table></figure>
@@ -192,8 +192,8 @@
   <entry>
     <title>为什么我不发朋友圈</title>
     <url>/2019/10/02/why-i-stop-wechat/</url>
-    <content><![CDATA[<h2 id="读书有感"><a href="#读书有感" class="headerlink" title="读书有感"></a>读书有感</h2><p>最近看《曾国藩转》，还是深有感触的，首当其冲就是写日记自我反省的重要性。我陆续有写过几次，无论是技术的还是生活的，都未能坚持。其实还是应该每日抽出时间来做个反省当日所为。</p>
-<h2 id="关于朋友圈"><a href="#关于朋友圈" class="headerlink" title="关于朋友圈"></a>关于朋友圈</h2><p>假期在湖南游玩，今天发了个朋友圈，其实我很久没发朋友圈了。甚至关闭了微信的朋友圈功能。为什么关闭呢？我想到的理由是，微信好友里鱼龙混杂，我不想暴露自己的私生活。这固然是个理由，但其实我内心深知，原由不在此。是最近几年我一直固步自封，甚至退步了，人生没有进步，甚至吃喝玩乐都没有新意。所以我不发也不看，做个鸵鸟活着自己世界里。</p>
+    <content><![CDATA[<h2 id="读书有感"><a href="#读书有感" class="headerlink" title="读书有感"></a>读书有感</h2><p>最近看《曾国藩转》，还是深有感触的，首当其冲就是写日记自我反省的重要性。我陆续有写过几次，无论是技术的还是生活的，都未能坚持。其实还是应该每日抽出时间来做个反省当日所为。</p><h2 id="关于朋友圈"><a href="#关于朋友圈" class="headerlink" title="关于朋友圈"></a>关于朋友圈</h2><p>假期在湖南游玩，今天发了个朋友圈，其实我很久没发朋友圈了。甚至关闭了微信的朋友圈功能。为什么关闭呢？我想到的理由是，微信好友里鱼龙混杂，我不想暴露自己的私生活。这固然是个理由，但其实我内心深知，原由不在此。是最近几年我一直固步自封，甚至退步了，人生没有进步，甚至吃喝玩乐都没有新意。所以我不发也不看，做个鸵鸟活着自己世界里。</p><a id="more"></a>
+
 <h2 id="焦虑"><a href="#焦虑" class="headerlink" title="焦虑"></a>焦虑</h2><p>人到中年，有老有小，虽然我只想当个简单的程序员，但这不现实，得更进一步了。没了工作不要紧，最怕就是把工作当退路，什么都干不好，昏昏沉沉浪费时间。</p>
 <h2 id="关于以后"><a href="#关于以后" class="headerlink" title="关于以后"></a>关于以后</h2><p>我不敢说学曾国藩立大志，但他确实给了我记录日记的勇气，而且日记就应该直面自己，深挖缺点，而不是粉饰太平。努力吧，为了更好的自己。</p>
 <h2 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h2><p>我知道写的很乱，完全不知道说什么。但我相信这只是过程。勤动脑，《尚拙》。</p>
@@ -202,8 +202,8 @@
   <entry>
     <title>wechat extension</title>
     <url>/2019/09/30/wechat-extension/</url>
-    <content><![CDATA[<h2 id="为什么需要微信扩展"><a href="#为什么需要微信扩展" class="headerlink" title="为什么需要微信扩展"></a>为什么需要微信扩展</h2><p>这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。<br>所以我希望做个工具减轻她的公众。</p>
-<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：</p>
+    <content><![CDATA[<h2 id="为什么需要微信扩展"><a href="#为什么需要微信扩展" class="headerlink" title="为什么需要微信扩展"></a>为什么需要微信扩展</h2><p>这两年大火的社群营销（S2b2c）主要玩法就是微信群营销，通过好衣库、唯品会提供的素材在各自维护的群内做播客。主要群体就是妈妈们，当日也包括了我老婆。<br>所以我希望做个工具减轻她的公众。</p><h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>做个微信扩展，监控素材群，素材群主要就是发送当日的推荐商品图片，其中二维码是上家的，需要替换后转发到其他微信群。所以流程应该是：</p><a id="more"></a>
+
 <div id="flowchart-0" class="flow-chart"></div>
 
 <h2 id="开源组件"><a href="#开源组件" class="headerlink" title="开源组件"></a>开源组件</h2><ol>
@@ -232,7 +232,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
 </li>
 <li><p>知乎上看到《曾国藩转》，其最为出名的就是记日记，为其自律及敢于正面自己的态度所感，我也打算取其“尚拙”座右铭，开启下半生的新篇章。</p>
 </li>
-</ol>
+</ol><a id="more"></a>
 <h3 id="究竟是什么事"><a href="#究竟是什么事" class="headerlink" title="究竟是什么事"></a>究竟是什么事</h3><p>上着班，挂着耳机，听着音乐，忽然就被抓了。</p>
 <p>由于涉嫌诈骗，我被关押看守所近8个月后，签署非法经营罪的认罪认罚取保候审，退还工资4万元，检察院最终决定不起诉。</p>
 <ol>
@@ -349,26 +349,26 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   <entry>
     <title>使用vue开发单页程序（SPA）</title>
     <url>/2019/09/25/single-page-app-with-vue/</url>
-    <content><![CDATA[<h2 id="什么是单页程序SPA"><a href="#什么是单页程序SPA" class="headerlink" title="什么是单页程序SPA"></a>什么是单页程序SPA</h2><p>整个网站中只有一个页面，在这个页面中会加载很多个不同的组件，当我们点击按钮时，并不会打开一个新的页面，而是还在当前的页面中切换显示不同的组件。</p>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+    <content><![CDATA[<h2 id="什么是单页程序SPA"><a href="#什么是单页程序SPA" class="headerlink" title="什么是单页程序SPA"></a>什么是单页程序SPA</h2><p>整个网站中只有一个页面，在这个页面中会加载很多个不同的组件，当我们点击按钮时，并不会打开一个新的页面，而是还在当前的页面中切换显示不同的组件。</p><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
 <li>用户体验好。</li>
 <li>减轻服务器的压力</li>
 <li>前后端分离</li>
-</ol>
-<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+</ol><h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
 <li>首页加载会比较慢</li>
 <li>seo不友好</li>
 <li>开发难度较大</li>
-</ol>
-<h2 id="什么是vue"><a href="#什么是vue" class="headerlink" title="什么是vue"></a>什么是vue</h2><p>是一套构建用户界面的渐进式框架。</p>
+</ol><h2 id="什么是vue"><a href="#什么是vue" class="headerlink" title="什么是vue"></a>什么是vue</h2><p>是一套构建用户界面的渐进式框架。</p><a id="more"></a>
+
+
+
 <h2 id="vue框架开发spa使用的技术"><a href="#vue框架开发spa使用的技术" class="headerlink" title="vue框架开发spa使用的技术"></a>vue框架开发spa使用的技术</h2><p>1、使用 Vue Cli 工具快速构建项目目录结构、开发环境、部署<br>2、使用 Vue-Router 实现路由，实现组件之间的切换<br>3、使用 Vuex 实现状态数据的管理<br>4、使用 axios 发送 AJAX 和服务器通信</p>
 ]]></content>
   </entry>
   <entry>
     <title>java basics - box and unbox</title>
     <url>/2019/09/20/java-basics-box-and-unbox/</url>
-    <content><![CDATA[<h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h2 id="java-基础之拆箱、装箱"><a href="#java-基础之拆箱、装箱" class="headerlink" title="java 基础之拆箱、装箱"></a>java 基础之拆箱、装箱</h2><p>先看看下面的代码，有疑问再继续看。</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">10</span>;</span><br><span class="line">Integer b = <span class="number">10</span>;</span><br><span class="line">System.Out.println(a == b); <span class="comment">// true or false ?</span></span><br><span class="line">Integer c = <span class="number">10</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br><span class="line">b = c  = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true of false ?</span></span><br><span class="line">b = <span class="number">150</span>;</span><br><span class="line">c = <span class="number">150</span>;</span><br><span class="line">System.out.println(b == c); <span class="comment">// true or false ?</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
 
 <p>看一看，想一想，答案在最后。</p>
 <h2 id="什么是基本类型"><a href="#什么是基本类型" class="headerlink" title="什么是基本类型"></a>什么是基本类型</h2><p>java中有8个基本类型，都有对应的包装类型。</p>
@@ -437,9 +437,9 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   <entry>
     <title>perf between c++,java and dotnet</title>
     <url>/2019/09/19/perf-between-c-java-and-dotnet/</url>
-    <content><![CDATA[<h2 id="为什么要做这个性能测试对比"><a href="#为什么要做这个性能测试对比" class="headerlink" title="为什么要做这个性能测试对比"></a>为什么要做这个性能测试对比</h2><p>一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:</p>
-<pre><code>1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。
-2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。</code></pre><p>而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形无法绘制问题，此类问题相当耗时费力。</p>
+    <content><![CDATA[<h2 id="为什么要做这个性能测试对比"><a href="#为什么要做这个性能测试对比" class="headerlink" title="为什么要做这个性能测试对比"></a>为什么要做这个性能测试对比</h2><p>一直以来C++都是以性能著称的，我接触到的项目中的项目中用C++的有2种:</p><pre><code>1. 一是做windows界面开发，传统物流行业的操作界面，支持拖拉拽，接受实时消息。
+2. 二是做linux后台服务框架，主要用于操作内存处理消息，调用lua脚本。</code></pre><p>而C++的弱点则众所周知是令人崩溃的指针。在之前的界面开发中无数次碰到指针越界系统崩溃、内存泄露导致内存暴涨以及GDI句柄泄漏导致图形无法绘制问题，此类问题相当耗时费力。</p><a id="more"></a>
+
 <p>很早之前我做过C++，之后转C#，最近几年转java。很想对三者做个比较，正好看到博客园有<a href="https://www.cnblogs.com/xiaotie/p/perf-3langs.html" target="_blank" rel="noopener">相关文章</a>,所以我也动手对比了下。</p>
 <h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>MacBook Pro<br>    1. OS: macOS Mojave (10.14.6)<br>    2. CPU: 2.3 GHz Intel Core i5<br>    3. Mem: 8 GB 2133 MHz LPDDR3）<br>    4. G++: Apple LLVM version 10.0.1 (clang-1001.0.46.4)<br>    5. java: 1.8.0_202<br>    6. jvm: Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)<br>    7. .NET Core: 2.2.402</p>
 <h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>两个简单的测试用例。均是循环5000次，操作 len = 1000000 的连续内存，计算执行时间。Test1是循环赋固定值，Test2则是动态值（位置相关）。</p>
@@ -495,8 +495,8 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   <entry>
     <title>为什么要写博客</title>
     <url>/2019/09/12/why-write-blog/</url>
-    <content><![CDATA[<p>断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。</p>
-<h2 id="1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><a href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）" class="headerlink" title="1. 学会写作Blog的技巧（teach you the skills of blogging）"></a>1. 学会写作Blog的技巧（teach you the skills of blogging）</h2><p>没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。</p>
+    <content><![CDATA[<p>断断续续写过一些博客，但都没有坚持，希望这次能够持久。抄录一些写博客的好处，方便以后激励自己。</p><h2 id="1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）"><a href="#1-学会写作Blog的技巧（teach-you-the-skills-of-blogging）" class="headerlink" title="1. 学会写作Blog的技巧（teach you the skills of blogging）"></a>1. 学会写作Blog的技巧（teach you the skills of blogging）</h2><p>没有人天生会写Blog，我刚开始的时候也不知道该怎么写。但是，经过不断的尝试，现在我知道怎么可以写出受欢迎的文章。</p><a id="more"></a>
+
 <h2 id="2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）"><a href="#2-便于更好地安排时间（help-you-work-out-how-much-time-you-have）" class="headerlink" title="2. 便于更好地安排时间（help you work out how much time you have）"></a>2. 便于更好地安排时间（help you work out how much time you have）</h2><p>写作Blog花费的时间，要比大家想象的多，甚至也比我自己想象的多。但是，另一方面，每天我们又有很多时间被无谓地浪费了。坚持写作Blog的过程，也是进行更好的时间安排的过程。</p>
 <h2 id="3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）"><a href="#3-便于你了解自己是否可以长期做一件喜欢的事情（help-you-work-out-if-you-can-sustain-blogging-for-the-long-term）" class="headerlink" title="3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）"></a>3. 便于你了解自己是否可以长期做一件喜欢的事情（help you work out if you can sustain blogging for the long term）</h2><p>很多人都有自己的爱好，但是只有当你享受到这种爱好时，你才会长期坚持下去。写作Blog可以帮助你体验到这种感觉。</p>
 <h2 id="4-便于你形成和了解自我（help-you-define-a-niche）"><a href="#4-便于你形成和了解自我（help-you-define-a-niche）" class="headerlink" title="4. 便于你形成和了解自我（help you define a niche）"></a>4. 便于你形成和了解自我（help you define a niche）</h2><p>长期写作Blog最大的好处之一就是，写着写着，你的自我会变得越来越清晰。你最终会明白自己是一个什么样的人，以及自己热爱的又是什么东西。</p>
@@ -506,7 +506,7 @@ cond1(no)->op1</textarea><textarea id="flowchart-0-options" style="display: none
   <entry>
     <title>Hello World</title>
     <url>/2019/09/12/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><a id="more"></a>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
